@@ -10,26 +10,57 @@
         .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         .error { color: red; font-weight: bold; }
         img { border-radius: 50%; }
+        /* Сюда нужно добавить остальные стили (glass-panel, progress-bar и т.д.) */
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <h1>NeoCrime DriverHub</h1>
-        <div id="status">З'єднання з сервером...</div>
+    <header class="app-header">Особистий кабінет</header>
+
+    <div id="loading-screen" class="loading-container">
+        <img src="ТУТ_ЛІНК_НА_ЛОГОТИП" alt="NeoCrime Logo" class="pulsing-logo">
+    </div>
+
+    <div id="status" style="font-weight: bold; margin-bottom: 10px;"></div>
+
+    <div id="user-info" style="display: none;">
         
-        <div id="user-info" style="display: none;">
-            <img id="avatar" src="" width="100" alt="Аватар">
+        <div class="profile-header">
+            <img id="avatar" src="" alt="Аватар" class="avatar-red">
             <h2 id="name"></h2>
-            <p><strong>Ранг:</strong> <span id="rank"></span></p>
-            <p><strong>Пробіг:</strong> <span id="km"></span> км</p>
-            <p><strong>Баланс:</strong> <span id="balance"></span> CC</p>
-            <p><strong>Рівень:</strong> <span id="level"></span></p>
-            <p><strong>TruckersMP:</strong> <span id="tmp_name"></span></p>
         </div>
 
-        <div id="error-info" class="error" style="display: none;"></div>
+        <div class="card glass-panel">
+            <div class="progress-section">
+                <div class="progress-info">
+                    <span>Пробіг</span>
+                    <span id="km-text">0 / 0 км</span>
+                </div>
+                <div class="progress-container">
+                    <div id="km-bar" class="progress-bar orange" style="width: 0%;"></div>
+                </div>
+            </div>
+
+            <div class="progress-section">
+                <div class="progress-info">
+                    <span>Досвід (Рівень <span id="level"></span>)</span>
+                    <span id="exp-text">0 / 0 EXP</span>
+                </div>
+                <div class="progress-container">
+                    <div id="exp-bar" class="progress-bar green" style="width: 0%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card glass-panel mt-15">
+            <div class="balance-container">
+                <span class="balance-label">Баланс CrimeCoin</span>
+                <span id="balance" class="balance-value">0 CC</span>
+            </div>
+        </div>
     </div>
+
+    <div id="error-info" class="error card glass-panel" style="display: none;"></div>
 
     <script>
         // Ініціалізуємо Telegram Mini App
@@ -67,24 +98,72 @@
                 statusDiv.style.display = "none";
                 
                 if (data.status === "success") {
+                    // 1. Приховуємо екран завантаження та показуємо контент
+                    document.getElementById("loading-screen").style.display = "none";
                     userInfoDiv.style.display = "block";
+
+                    // 2. Базові дані профілю
                     document.getElementById("avatar").src = data.avatar;
                     document.getElementById("name").innerText = data.name;
-                    document.getElementById("rank").innerText = data.rank;
-                    document.getElementById("km").innerText = data.km;
-                    document.getElementById("balance").innerText = data.balance;
                     document.getElementById("level").innerText = data.level;
-                    document.getElementById("tmp_name").innerText = data.tmp_name;
+                    document.getElementById("balance").innerText = data.balance + " CC";
+
+                    // 3. Логіка Прогрес-бару КМ
+                    let km = parseInt(String(data.km).replace(/\s/g, '')) || 0;
+                    let nextKm = 5000;
+                    if (km >= 100000) nextKm = km; 
+                    else if (km >= 30000) nextKm = 100000;
+                    else if (km >= 5000) nextKm = 30000;
                     
-                    // Зберігаємо session_token, щоб робити запити на /app_work чи /app_shop_buy
-                    localStorage.setItem("session_token", data.session_token);
-                } else {
-                    errorInfoDiv.style.display = "block";
-                    errorInfoDiv.innerText = "Помилка: " + data.reason;
+                    let kmPercent = km >= 100000 ? 100 : (km / nextKm) * 100;
+                    document.getElementById("km-text").innerText = `${km} / ${nextKm} км`;
+                    document.getElementById("km-bar").style.width = `${kmPercent}%`;
+
+                    // 4. Логіка Прогрес-бару EXP
+                    let totalExp = data.exp || 0;
+                    let level = 1;
+                    let remainingExp = totalExp;
+                    let reqExp = 300; 
+
+                    const tiers = [
+                        { min: 1, max: 10, req: 300 }, { min: 11, max: 20, req: 500 },
+                        { min: 21, max: 30, req: 800 }, { min: 31, max: 40, req: 1200 },
+                        { min: 41, max: 50, req: 1700 }, { min: 51, max: 60, req: 2300 },
+                        { min: 61, max: 70, req: 3000 }, { min: 71, max: 80, req: 3800 },
+                        { min: 81, max: 90, req: 4700 }, { min: 91, max: 100, req: 6000 }
+                    ];
+
+                    while (true) {
+                        let currentTier = tiers.find(t => level >= t.min && level <= t.max);
+                        if (!currentTier || level === 100) {
+                            reqExp = currentTier ? currentTier.req : 0;
+                            break;
+                        }
+                        if (remainingExp >= currentTier.req) {
+                            remainingExp -= currentTier.req;
+                            level++;
+                        } else {
+                            reqExp = currentTier.req;
+                            break;
+                        }
+                    }
+
+                    let expPercent = level === 100 ? 100 : (remainingExp / reqExp) * 100;
+                    document.getElementById("exp-text").innerText = `${remainingExp} / ${reqExp} EXP`;
+                    
+                    // Невелика затримка для красивої анімації смужки
+                    setTimeout(() => {
+                        document.getElementById("exp-bar").style.width = `${expPercent}%`;
+                    }, 100);
+
+                    // 5. Зберігаємо session_token (ИСПРАВЛЕНО)
+                    if (data.session_token) {
+                        localStorage.setItem('session_token', data.session_token);
+                    }
                 }
             })
             .catch(error => {
-                statusDiv.style.display = "none";
+                if(statusDiv) statusDiv.style.display = "none";
                 errorInfoDiv.style.display = "block";
                 errorInfoDiv.innerText = "Помилка з'єднання з бекендом NeoCrime.";
                 console.error("Fetch Error:", error);
