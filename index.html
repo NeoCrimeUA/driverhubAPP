@@ -11,15 +11,11 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
 </head>
-<body>
-
-    <header class="app-header">Особистий кабінет</header>
-
-    <div id="loading-screen" class="loading-container">
-        <img src="ТУТ_ЛІНК_НА_ЛОГОТИП" alt="NeoCrime Logo" class="pulsing-logo">
+<div id="loading-screen" class="loading-container">
+        <img src="https://i.ibb.co/3m4NcgLq/LOGO-5.png" alt="NeoCrime Logo" class="pulsing-logo">
     </div>
 
-    <div id="status" style="font-weight: bold; margin-bottom: 10px;"></div>
+    <div id="status" style="font-weight: bold; margin-bottom: 10px; text-align: center;"></div>
 
     <div id="user-info" style="display: none;">
         
@@ -31,7 +27,7 @@
         <div class="card glass-panel">
             <div class="progress-section">
                 <div class="progress-info">
-                    <span>Пробіг</span>
+                    <span>До наступного рангу</span>
                     <span id="km-text">0 / 0 км</span>
                 </div>
                 <div class="progress-container">
@@ -52,8 +48,19 @@
 
         <div class="card glass-panel mt-15">
             <div class="balance-container">
-                <span class="balance-label">Баланс CrimeCoin</span>
-                <span id="balance" class="balance-value">0 CC</span>
+                <div class="balance-text-group">
+                    <span class="balance-label">Баланс CrimeCoin</span>
+                    <span id="balance" class="balance-value">0 CC</span>
+                </div>
+                <button class="gift-btn active" onclick="openGiftShop()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="20 12 20 22 4 22 4 12"></polyline>
+                        <rect x="2" y="7" width="20" height="5"></rect>
+                        <line x1="12" y1="22" x2="12" y2="7"></line>
+                        <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path>
+                        <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path>
+                    </svg>
+                </button>
             </div>
         </div>
     </div>
@@ -106,16 +113,21 @@
                     document.getElementById("level").innerText = data.level;
                     document.getElementById("balance").innerText = data.balance + " CC";
 
-                    // 3. Логіка Прогрес-бару КМ
+                    // 3. Логика Прогрес-бару КМ (ОБНОВЛЕНО)
                     let km = parseInt(String(data.km).replace(/\s/g, '')) || 0;
                     let nextKm = 5000;
-                    if (km >= 100000) nextKm = km; 
-                    else if (km >= 30000) nextKm = 100000;
-                    else if (km >= 5000) nextKm = 30000;
                     
-                    let kmPercent = km >= 100000 ? 100 : (km / nextKm) * 100;
-                    document.getElementById("km-text").innerText = `${km} / ${nextKm} км`;
-                    document.getElementById("km-bar").style.width = `${kmPercent}%`;
+                    if (km >= 100000) {
+                        document.getElementById("km-text").innerHTML = `${km} / &infin;`;
+                        document.getElementById("km-bar").style.width = `100%`;
+                    } else {
+                        if (km >= 30000) nextKm = 100000;
+                        else if (km >= 5000) nextKm = 30000;
+                        
+                        let kmPercent = (km / nextKm) * 100;
+                        document.getElementById("km-text").innerText = `${km} / ${nextKm} км`;
+                        document.getElementById("km-bar").style.width = `${kmPercent}%`;
+                    }
 
                     // 4. Логіка Прогрес-бару EXP
                     let totalExp = data.exp || 0;
@@ -167,6 +179,15 @@
                 console.error("Fetch Error:", error);
             });
         }
+
+        // Заглушка для будущей логики магазина подарков
+        function openGiftShop() {
+            const giftBtn = document.querySelector('.gift-btn');
+            if (giftBtn.classList.contains('disabled')) return;
+            
+            alert("Магазин подарунків у розробці!");
+        }
+
     </script>
 </body>
 </html>
