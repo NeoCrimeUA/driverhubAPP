@@ -240,9 +240,13 @@
         window.Telegram.WebApp.ready();
         window.Telegram.WebApp.expand(); 
 
+        if (window.Telegram.WebApp.disableVerticalSwipes) {
+            window.Telegram.WebApp.disableVerticalSwipes();
+        }
+
         const initDataUnsafe = window.Telegram.WebApp.initDataUnsafe;
     
-        const telegramId = initDataUnsafe.user ? initDataUnsafe.user.id : null; 
+        const telegramId = initDataUnsafe.user ? initDataUnsafe.user.id : null;
 
         const statusDiv = document.getElementById("status");
         const userInfoDiv = document.getElementById("user-info");
@@ -266,11 +270,23 @@
                 },
                 body: JSON.stringify({ telegram_id: telegramId })
             })
-            .then(response => response.json())
+            .then(async response => {
+                // Перехоплюємо чистий HTTP 403 (якщо сервер одразу відхиляє запит)
+                if (response.status === 403) {
+                    return { status: "error", reason: "Помилка 403: Немає доступу. Щоб отримати доступ, пропишіть команду <b style='color:#ff3333;'>/link_telegram</b> на Discord сервері." };
+                }
+                return response.json();
+            })
             .then(data => {
                 statusDiv.style.display = "none";
                 
                 if (data.status === "success") {
+                    
+                    // === 1. ФИКС КВИЗА: Сохраняем токен в самом начале! ===
+                    if (data.session_token) {
+                        localStorage.setItem('session_token', data.session_token);
+                    }
+
                     document.getElementById("loading-screen").style.display = "none";
                     userInfoDiv.style.display = "block";
                     
@@ -323,9 +339,10 @@
 
                     // Анімація цифр загального пробігу
                     animateNumbers("total-mileage", 0, km, 1000, " км");
+                    
+                    // === 2. ВЫЗОВ КВИЗА: Теперь он сработает, так как токен уже сохранен ===
                     checkTgQuizStatus();
                     
-                    // ФИКС БАГУ: Тепер тут виводяться реальні кілометри за місяць, які прилітають із бекенду
                     let monthKm = parseInt(data.month_km) || 0;
                     document.getElementById("month-mileage").innerText = monthKm.toLocaleString('en-US');
                     
@@ -381,15 +398,21 @@
                         document.getElementById("exp-bar").style.width = `${expPercent}%`;
                     }, 100);
 
-                    if (data.session_token) {
-                        localStorage.setItem('session_token', data.session_token);
-                    }
+                } else {
+                    // === 3. НОВИЙ БЛОК: ОБРОБКА ПОМИЛКИ 403 (НЕМАЄ В БАЗІ) ===
+                    document.getElementById("loading-screen").style.display = "none";
+                    errorInfoDiv.style.display = "block";
+                    // Якщо бекенд надіслав свій текст помилки - виводимо його, інакше стандартний про /link_telegram
+                    errorInfoDiv.innerHTML = data.reason || "Помилка 403: Немає доступу. Щоб отримати доступ, пропишіть команду <b style='color:#ff3333;'>/link_telegram</b> на Discord сервері.";
                 }
             })
             .catch(error => {
                 if(statusDiv) statusDiv.style.display = "none";
+                document.getElementById("loading-screen").style.display = "none";
                 errorInfoDiv.style.display = "block";
-                errorInfoDiv.innerText = "Помилка з'єднання з бекендом NeoCrime.";
+                
+                // Якщо сталась жорстка помилка мережі або CORS, виводимо те саме повідомлення для підстраховки
+                errorInfoDiv.innerHTML = "Помилка 403: Немає доступу. Щоб отримати доступ, пропишіть команду <b style='color:#ff3333;'>/link_telegram</b> на Discord сервері.";
                 console.error("Fetch Error:", error);
             });
         }
@@ -430,12 +453,14 @@
         function showLeaderboardSection() {
             document.getElementById('user-info').style.display = 'none';
             document.getElementById('leaderboard-section').style.display = 'block';
+            window.scrollTo(0, 0); // Возвращает скролл в самый верх
             switchLeaderboardTab('month'); 
         }
 
         function hideLeaderboardSection() {
             document.getElementById('leaderboard-section').style.display = 'none';
             document.getElementById('user-info').style.display = 'block';
+            window.scrollTo(0, 0); // Возвращает скролл в самый верх
         }
 
         function switchLeaderboardTab(tab) {
@@ -808,7 +833,6 @@
             let newsItem = globalNewsData[index];
             if (!newsItem) return;
 
-            // Наполняем поля текстом (чисто белый и серый тона)
             document.getElementById('mobile-news-title').innerText = newsItem.title || 'Без заголовка';
             document.getElementById('mobile-news-author').innerText = `Автор: ${newsItem.author || 'Адміністрація'}`;
             document.getElementById('mobile-news-date').innerText = newsItem.date || '-';
@@ -822,11 +846,16 @@
                 img.style.display = "none";
             }
 
-            // Переключаем отображение: прячем общую ленту, открываем изолированную вкладку новости
-            document.getElementById('news-main-view').style.display = 'none';
-            document.getElementById('news-opened-view').style.display = 'block';
+            let mainView = document.getElementById('news-main-view');
+            let openedView = document.getElementById('news-opened-view');
 
-            // Скроллим в самый верх развернутой новости
+            mainView.style.display = 'none';
+            openedView.style.display = 'block';
+            
+            // Запуск анимации появления
+            openedView.classList.remove('news-closing');
+            openedView.classList.add('news-opening');
+
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
             if (window.Telegram && window.Telegram.WebApp.HapticFeedback) {
@@ -835,9 +864,23 @@
         }
 
         function closeMobileNews() {
-            // Закрываем вкладку конкретной новости и возвращаем ленту
-            document.getElementById('news-opened-view').style.display = 'none';
-            document.getElementById('news-main-view').style.display = 'block';
+            let mainView = document.getElementById('news-main-view');
+            let openedView = document.getElementById('news-opened-view');
+
+            // Запуск анимации закрытия
+            openedView.classList.remove('news-opening');
+            openedView.classList.add('news-closing');
+
+            // Ждем завершения анимации закрытия перед переключением display
+            setTimeout(() => {
+                openedView.style.display = 'none';
+                mainView.style.display = 'block';
+                
+                // Легкая анимация появления ленты обратно
+                mainView.classList.remove('news-closing');
+                mainView.classList.add('news-opening');
+                setTimeout(() => mainView.classList.remove('news-opening'), 300);
+            }, 250); 
 
             if (window.Telegram && window.Telegram.WebApp.HapticFeedback) {
                 window.Telegram.WebApp.HapticFeedback.impactOccurred("light");

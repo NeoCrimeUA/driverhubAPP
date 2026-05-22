@@ -4,6 +4,20 @@
     -webkit-user-select: none;
 }
 
+html, body {
+    overscroll-behavior: none;
+    overscroll-behavior-y: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+* {
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent; /* Убирает синий квадрат при тапе */
+    -webkit-touch-callout: none; /* Блокирует всплывающее меню у фото/ссылок */
+}
+
 body {
     background-color: #080808; /* Чисто черный глубокий фон из десктопа */
     margin: 0;
@@ -1059,4 +1073,53 @@ body {
     0% { box-shadow: 0 0 10px #ff3333; }
     50% { box-shadow: 0 0 20px #ff3333, 0 0 8px #ff3333 inset; }
     100% { box-shadow: 0 0 10px #ff3333; }
+}
+
+.news-opening {
+    animation: newsFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.news-closing {
+    animation: newsFadeOut 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes newsFadeIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes newsFadeOut {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(20px); }
+}
+
+/* =========================================================================
+   ОПТИМІЗАЦІЯ ПЛАВНОСТІ СКРОЛЛУ ТА АПАРАТНЕ ПРИСКОРЕННЯ (MOBILE FIX)
+   ========================================================================= */
+
+/* 1. Включаем нативный инерционный скролл (momentum scrolling) для внутренних блоков */
+#top-drivers-container, 
+.leaderboard-list,
+.main-content-wrapper {
+    -webkit-overflow-scrolling: touch !important; 
+    touch-action: pan-y !important; /* Разрешаем браузеру обрабатывать только вертикальный свайп, убирая лаги от микро-сдвигов по горизонтали */
+}
+
+/* 2. Форсируем использование видеокарты (GPU) для тяжелых стеклянных панелей */
+.glass-panel, .card {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    /* Это заставит телефон выделить отдельный графический слой под карточку, скролл перестанет тормозить из-за blur() */
+    transform: translateZ(0); 
+    -webkit-transform: translateZ(0);
+}
+
+/* 3. Убираем рывки анимаций при быстрой прокрутке */
+.leaderboard-cascade-card {
+    will-change: transform, opacity;
+}
+
+/* 4. Глобальный фикс сглаживания шрифтов при аппаратном ускорении */
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
