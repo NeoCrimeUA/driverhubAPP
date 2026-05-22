@@ -13,8 +13,10 @@
 }
 
 html, body {
-    width: 100%; 
-    overflow-x: hidden; /* Оставляем только защиту от горизонтального сдвига */
+    width: 100%;
+    overflow-x: hidden; /* Захист від горизонтального зсуву залишаємо */
+    overflow-y: auto; /* ФІКС: Явно дозволяємо вертикальний скрол */
+    -webkit-overflow-scrolling: touch; /* ФІКС: Вмикаємо нативний плавний скрол для iOS */
     position: relative;
 }
 
