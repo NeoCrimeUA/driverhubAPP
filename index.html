@@ -263,6 +263,25 @@
             // =========================================================================
             // === АКТИВНИЙ БЛОК: Запит до бекенду із заглушкою ID ===
             // =========================================================================
+            
+            // Шаблон красивого оформлення помилки 403
+            const error403Template = `
+                <div style="text-align: center; padding: 10px 5px;">
+                    <div style="font-size: 72px; font-weight: 900; color: #ff3333; text-shadow: 0 0 30px rgba(255, 51, 51, 0.5); line-height: 1; margin-bottom: 10px;">403</div>
+                    <h2 style="font-size: 22px; font-weight: 900; color: #ffffff; margin: 0 0 15px 0; text-transform: uppercase; letter-spacing: 1px;">Доступ заборонено</h2>
+                    <div style="height: 1px; background: rgba(255, 51, 51, 0.2); width: 100%; margin-bottom: 15px;"></div>
+                    <p style="font-size: 14px; color: #aaaaaa; line-height: 1.5; margin: 0; font-weight: 500;">
+                        Щоб отримати доступ до додатку, вам потрібно прив'язати свій Telegram акаунт.
+                    </p>
+                    <div style="margin-top: 20px;">
+                        <span style="font-size: 11px; color: #888; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Введіть команду в Discord сервері:</span><br>
+                        <div style="color: #ff3333; font-size: 16px; font-weight: 900; background: rgba(255, 51, 51, 0.1); padding: 10px 20px; border-radius: 12px; display: inline-block; margin-top: 10px; border: 1px solid rgba(255, 51, 51, 0.3); letter-spacing: 1px; box-shadow: 0 0 15px rgba(255, 51, 51, 0.1);">
+                            /link_telegram
+                        </div>
+                    </div>
+                </div>
+            `;
+
             fetch("https://api.neocrime.space/api/tg_login", {
                 method: "POST",
                 headers: {
@@ -273,7 +292,7 @@
             .then(async response => {
                 // Перехоплюємо чистий HTTP 403 (якщо сервер одразу відхиляє запит)
                 if (response.status === 403) {
-                    return { status: "error", reason: "Помилка 403: Немає доступу. Щоб отримати доступ, пропишіть команду <b style='color:#ff3333;'>/link_telegram</b> на Discord сервері." };
+                    return { status: "error", reason: error403Template };
                 }
                 return response.json();
             })
@@ -402,8 +421,8 @@
                     // === 3. НОВИЙ БЛОК: ОБРОБКА ПОМИЛКИ 403 (НЕМАЄ В БАЗІ) ===
                     document.getElementById("loading-screen").style.display = "none";
                     errorInfoDiv.style.display = "block";
-                    // Якщо бекенд надіслав свій текст помилки - виводимо його, інакше стандартний про /link_telegram
-                    errorInfoDiv.innerHTML = data.reason || "Помилка 403: Немає доступу. Щоб отримати доступ, пропишіть команду <b style='color:#ff3333;'>/link_telegram</b> на Discord сервері.";
+                    // Якщо бекенд надіслав свій текст помилки - виводимо його, інакше гарний шаблон
+                    errorInfoDiv.innerHTML = data.reason || error403Template;
                 }
             })
             .catch(error => {
@@ -411,8 +430,8 @@
                 document.getElementById("loading-screen").style.display = "none";
                 errorInfoDiv.style.display = "block";
                 
-                // Якщо сталась жорстка помилка мережі або CORS, виводимо те саме повідомлення для підстраховки
-                errorInfoDiv.innerHTML = "Помилка 403: Немає доступу. Щоб отримати доступ, пропишіть команду <b style='color:#ff3333;'>/link_telegram</b> на Discord сервері.";
+                // Виводимо гарний шаблон навіть при жорсткій помилці (CORS або впав бекенд)
+                errorInfoDiv.innerHTML = error403Template;
                 console.error("Fetch Error:", error);
             });
         }
@@ -451,25 +470,17 @@
         let currentTab = 'month';
 
         function showLeaderboardSection() {
-    document.getElementById('user-info').style.display = 'none';
-    document.getElementById('leaderboard-section').style.display = 'block';
-    
-    // БЛОКИРУЕМ скролл основной страницы
-    document.body.classList.add('lock-scroll');
-    
-    window.scrollTo(0, 0); // Возвращает скролл в самый верх
-    switchLeaderboardTab('month'); 
-}
+            document.getElementById('user-info').style.display = 'none';
+            document.getElementById('leaderboard-section').style.display = 'block';
+            window.scrollTo(0, 0); // Возвращает скролл в самый верх
+            switchLeaderboardTab('month'); 
+        }
 
-function hideLeaderboardSection() {
-    document.getElementById('leaderboard-section').style.display = 'none';
-    document.getElementById('user-info').style.display = 'block';
-    
-    // РАЗБЛОКИРУЕМ скролл основной страницы
-    document.body.classList.remove('lock-scroll');
-    
-    window.scrollTo(0, 0); // Возвращает скролл в самый верх
-}
+        function hideLeaderboardSection() {
+            document.getElementById('leaderboard-section').style.display = 'none';
+            document.getElementById('user-info').style.display = 'block';
+            window.scrollTo(0, 0); // Возвращает скролл в самый верх
+        }
 
         function switchLeaderboardTab(tab) {
             currentTab = tab;
