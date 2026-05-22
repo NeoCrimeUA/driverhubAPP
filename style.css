@@ -4,11 +4,16 @@
     -webkit-user-select: none;
 }
 
+/* 1. Жестко фиксируем ширину и блокируем скролл на уровне документа */
 html, body {
     overscroll-behavior: none;
     overscroll-behavior-y: none;
     -webkit-overflow-scrolling: touch;
+    overflow-x: hidden !important; /* Убивает горизонтальную полосу прокрутки */
+    width: 100%; /* Фиксируем ширину строго по экрану */
+    position: relative;
 }
+
 
 * {
     box-sizing: border-box;
@@ -564,10 +569,17 @@ body {
    ФІКСОВАНЕ НИЖНЄ МЕНЮ В СТИЛІ PREMIUM DYNAMIC ISLAND
    ========================================================================= */
 
-/* Головний контейнер обгортки сторінок */
+/* 2. Блокируем расширение экрана при срабатывании анимации translateX */
 .main-content-wrapper {
     width: 100%;
     position: relative;
+    overflow-x: hidden !important; /* Не дает анимации вытолкнуть контент за рамки */
+}
+
+/* 3. Гарантируем, что сама вкладка новостей не ломает ширину */
+#tab-content-news {
+    overflow-x: hidden;
+    width: 100%;
 }
 
 /* Приховування / Відображення сторінок вкладок */
@@ -1122,4 +1134,15 @@ body {
 body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+/* Блокировка скролла фона */
+body.lock-scroll {
+    overflow: hidden !important;
+    height: 100vh !important;
+}
+
+/* Изоляция скролла внутри контейнера топа */
+#top-drivers-container {
+    overscroll-behavior: contain !important; /* Блокирует передачу скролла фону */
 }

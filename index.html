@@ -451,17 +451,25 @@
         let currentTab = 'month';
 
         function showLeaderboardSection() {
-            document.getElementById('user-info').style.display = 'none';
-            document.getElementById('leaderboard-section').style.display = 'block';
-            window.scrollTo(0, 0); // Возвращает скролл в самый верх
-            switchLeaderboardTab('month'); 
-        }
+    document.getElementById('user-info').style.display = 'none';
+    document.getElementById('leaderboard-section').style.display = 'block';
+    
+    // БЛОКИРУЕМ скролл основной страницы
+    document.body.classList.add('lock-scroll');
+    
+    window.scrollTo(0, 0); // Возвращает скролл в самый верх
+    switchLeaderboardTab('month'); 
+}
 
-        function hideLeaderboardSection() {
-            document.getElementById('leaderboard-section').style.display = 'none';
-            document.getElementById('user-info').style.display = 'block';
-            window.scrollTo(0, 0); // Возвращает скролл в самый верх
-        }
+function hideLeaderboardSection() {
+    document.getElementById('leaderboard-section').style.display = 'none';
+    document.getElementById('user-info').style.display = 'block';
+    
+    // РАЗБЛОКИРУЕМ скролл основной страницы
+    document.body.classList.remove('lock-scroll');
+    
+    window.scrollTo(0, 0); // Возвращает скролл в самый верх
+}
 
         function switchLeaderboardTab(tab) {
             currentTab = tab;
