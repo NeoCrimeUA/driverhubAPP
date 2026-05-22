@@ -11,74 +11,239 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
 </head>
-<div id="loading-screen" class="loading-container">
+<body>
+    <div id="loading-screen" class="loading-container">
         <img src="https://i.ibb.co/3m4NcgLq/LOGO-5.png" alt="NeoCrime Logo" class="pulsing-logo">
     </div>
 
-    <div id="status" style="font-weight: bold; margin-bottom: 10px; text-align: center;"></div>
+    <div id="status" style="font-weight: bold; margin-bottom: 10px; text-align: center; display: none;"></div>
+    <div id="error-info" class="error card glass-panel" style="display: none;"></div>
 
-    <div id="user-info" style="display: none;">
-        
-        <div class="profile-header">
-            <img id="avatar" src="" alt="Аватар" class="avatar-red">
-            <h2 id="name"></h2>
-        </div>
+    <div class="main-content-wrapper">
 
-        <div class="card glass-panel">
-            <div class="progress-section">
-                <div class="progress-info">
-                    <span>До наступного рангу</span>
-                    <span id="km-text">0 / 0 км</span>
-                </div>
-                <div class="progress-container">
-                    <div id="km-bar" class="progress-bar orange" style="width: 0%;"></div>
-                </div>
-            </div>
-
-            <div class="progress-section">
-                <div class="progress-info">
-                    <span>Досвід (Рівень <span id="level"></span>)</span>
-                    <span id="exp-text">0 / 0 EXP</span>
-                </div>
-                <div class="progress-container">
-                    <div id="exp-bar" class="progress-bar green" style="width: 0%;"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card glass-panel mt-15">
-            <div class="balance-container">
-                <div class="balance-text-group">
-                    <span class="balance-label">Баланс CrimeCoin</span>
-                    <span id="balance" class="balance-value">0 CC</span>
-                </div>
-                <button class="gift-btn active" onclick="openGiftShop()">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="20 12 20 22 4 22 4 12"></polyline>
-                        <rect x="2" y="7" width="20" height="5"></rect>
-                        <line x1="12" y1="22" x2="12" y2="7"></line>
-                        <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"></path>
-                        <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"></path>
+        <div id="tab-content-profile" class="app-tab-page active">
+            <div id="user-info" style="display: none; position: relative;">
+                
+                <div id="quiz-btn" class="quiz-island cooldown" onclick="openMobileQuiz()" title="Завантаження...">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/>
+                        <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/>
                     </svg>
-                </button>
+                </div>
+
+                <div class="profile-header">
+                    <img id="avatar" src="" alt="Аватар" class="avatar-red">
+                    <h2 id="name"></h2>
+                    <div id="rank-badge" style="display: inline-block; margin-top: 8px; padding: 4px 12px; border: 1px solid #ff3333; border-radius: 12px; color: #ff3333; font-size: 11px; font-weight: 900; background: rgba(255, 51, 51, 0.1); letter-spacing: 0.5px; text-transform: uppercase;">Завантаження...</div>
+                </div>
+
+                <div class="card glass-panel">
+                    <div class="progress-section">
+                        <div class="progress-info">
+                            <span>До наступного рангу</span>
+                            <span id="km-text">0 / 0 км</span>
+                        </div>
+                        <div class="progress-container">
+                            <div id="km-bar" class="progress-bar orange" style="width: 0%;"></div>
+                        </div>
+                    </div>
+
+                    <div class="progress-section">
+                        <div class="progress-info">
+                            <span>EXP (Рівень <span id="level"></span>)</span>
+                            <span id="exp-text">0 / 0 EXP</span>
+                        </div>
+                        <div class="progress-container">
+                            <div id="exp-bar" class="progress-bar green" style="width: 0%;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card glass-panel mt-15">
+                    <div class="balance-container">
+                        <div class="balance-text-group">
+                            <span class="balance-label">Баланс CrimeCoin</span>
+                            <span id="balance" class="balance-value">0 CC</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <div id="work-streak" style="color: #ff9900; font-size: 18px; font-weight: 900; display: none;" title="Серія роботи">🔥<span id="streak-count">0</span></div>
+                            <div id="work-btn" class="work-btn-container disabled" title="Завантаження...">🎁</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card glass-panel mt-15"> 
+                    <div class="balance-container">
+                        <div class="balance-text-group">
+                            <span class="balance-label">ПРОБІГ</span>
+                            <span id="total-mileage" class="balance-value">0 км</span>
+                            <span class="mileage-month">За місяць: <span id="month-mileage">0</span> км</span>
+                        </div>
+                        <div class="top-btn-container" onclick="openInternalLeaderboard()" title="Топ водіїв компанії">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 28px; height: 28px; color: #fff;"><path d="M18 20V10"></path><path d="M12 20V4"></path><path d="M6 20v-6"></path></svg>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card glass-panel mt-15">
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        <img id="tmp-avatar" src="https://i.ibb.co/60qZq1c/default-avatar.png" alt="TMP Avatar" style="width: 50px; height: 50px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); object-fit: cover; flex-shrink: 0;">
+                        <div class="balance-text-group">
+                            <span class="balance-label">TRUCKERSMP ПРОФІЛЬ</span>
+                            <span id="tmp-name" style="font-size: 18px; font-weight: 900; color: #fff;">Завантаження...</span>
+                            <span style="font-size: 11px; color: #888; font-weight: 600; margin-top: 2px;">Реєстрація: <span id="tmp-join" style="color: #ccc;">...</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card glass-panel mt-15" style="margin-bottom: 110px;">
+                    <div class="balance-container">
+                        <div class="balance-text-group">
+                            <span class="balance-label">СТАТУС АКАУНТА (TMP)</span>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <div id="ban-dot" class="status-dot"></div>
+                                <span id="ban-status" style="font-size: 20px; font-weight: 900; color: #fff;">...</span>
+                            </div>
+                            <span style="font-size: 11px; color: #888; font-weight: 600; margin-top: 2px;">Активних банів: <span id="ban-count" style="color: #fff;">0</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="leaderboard-section" style="display: none; width: 100%; margin-bottom: 110px;">
+                <div class="top-nav-island">
+                    <div class="dynamic-island">
+                        <div id="tab-month" class="nav-btn active" onclick="switchLeaderboardTab('month')">За місяць</div>
+                        <div id="tab-all" class="nav-btn" onclick="switchLeaderboardTab('all')">За весь час</div>
+                    </div>
+                    <button class="island-close-btn" onclick="closeInternalLeaderboard()">✖</button>
+                </div>
+                <div id="top-drivers-container">
+                    <div id="leaderboard-list" class="leaderboard-animate-container"></div>
+                </div>
             </div>
         </div>
+
+        <div id="tab-content-news" class="app-tab-page">
+            
+            <div id="news-main-view" style="width: 100%;">
+                <div class="card glass-panel" style="margin-top: 15px; margin-bottom: 15px; padding: 15px 20px;">
+                    <p class="news-feed-title-meta">NeoCrime Company News</p>
+                    <h2 style="margin: 5px 0 0 0; font-size: 20px; font-weight: 900; color: #fff;">📰 Новини компанії</h2>
+                </div>
+
+                <div id="news-feed-container" style="padding-bottom: 110px;">
+                    </div>
+            </div>
+
+            <div id="news-opened-view" style="display: none; width: 100%; padding-bottom: 110px;">
+                <div class="top-nav-island" style="position: relative; margin-bottom: 20px;">
+                    <div class="dynamic-island" style="justify-content: center; width: 160px;">
+                        <span style="font-size: 11px; font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: 0.5px;">Новина компанії</span>
+                    </div>
+                    <button class="island-close-btn" onclick="closeMobileNews()">✖</button>
+                </div>
+                
+                <div class="card glass-panel" style="padding: 20px;">
+                    <img id="mobile-news-img" src="" class="news-thumb" style="height: 200px; margin-bottom: 15px; display: none;">
+                    <h2 id="mobile-news-title" style="font-size: 20px; font-weight: 900; color: #fff; margin: 0 0 10px 0; line-height: 1.3;"></h2>
+                    
+                    <div class="news-footer-container">
+                        <span id="mobile-news-author" class="news-footer-author"></span>
+                        <span id="mobile-news-date"></span>
+                    </div>
+                    
+                    <div class="news-separator"></div>
+                    <div id="mobile-news-desc" style="color: #aaaaaa; font-size: 13.5px; line-height: 1.6; white-space: pre-wrap; font-family: 'Montserrat', sans-serif;"></div>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="tab-content-convoys" class="app-tab-page">
+            <div id="convoys-main-view" style="width: 100%;">
+                <div class="card glass-panel" style="margin-top: 15px; margin-bottom: 15px; padding: 15px 20px;">
+                    <p class="news-feed-title-meta">NeoCrime Logistics</p>
+                    <h2 style="margin: 5px 0 0 0; font-size: 20px; font-weight: 900; color: #fff;">🚛 Розклад конвоїв</h2>
+                </div>
+
+                <div id="convoys-list-container" style="padding-bottom: 110px;">
+                    <div style="text-align: center; color: #666; padding: 40px; font-weight: bold; font-size: 13px;">ЗАВАНТАЖЕННЯ КОНВОЇВ... 🚛</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="mobile-map-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10000; justify-content: center; align-items: center; flex-direction: column; backdrop-filter: blur(10px);" onclick="closeMobileMapViewer()">
+            <div class="top-nav-island" style="position: absolute; top: 15px; right: 15px; margin: 0; width: auto; height: auto; background: transparent; border: none; backdrop-filter: none;">
+                <button class="island-close-btn" style="position: relative; transform: none; right: 0;" onclick="closeMobileMapViewer()">✖</button>
+            </div>
+            <img id="mobile-map-img" src="" style="max-width: 95%; max-height: 80vh; border-radius: 12px; object-fit: contain; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
+            <p style="color: #aaaaaa; font-size: 12px; margin-top: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Натисніть будь-де, щоб закрити</p>
+        </div>
+
+        <div id="tab-content-shop" class="app-tab-page">
+            <div style="width: 100%;">
+                <div class="card glass-panel" style="margin-top: 15px; margin-bottom: 15px; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <p class="news-feed-title-meta">NeoCrime Store</p>
+                        <h2 style="margin: 5px 0 0 0; font-size: 20px; font-weight: 900; color: #fff;">🛒 Магазин Ролей</h2>
+                    </div>
+                    <div style="text-align: right;">
+                        <span style="font-size: 10px; color: #aaa; font-weight: 700; display: block; margin-bottom: 2px;">БАЛАНС</span>
+                        <span id="shop-balance-display" style="font-size: 16px; font-weight: 900; color: #ffd700;">0 CC</span>
+                    </div>
+                </div>
+
+                <div id="shop-list-container" style="padding-bottom: 110px;">
+                    <div style="text-align: center; color: #666; padding: 40px; font-weight: bold; font-size: 13px;">ЗАВАНТАЖЕННЯ ТОВАРІВ... 🛒</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="mobile-shop-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10000; justify-content: center; align-items: center; backdrop-filter: blur(10px);">
+            <div class="glass-panel card" style="width: 85%; max-width: 350px; text-align: center; padding: 30px 20px; transform: scale(0.9); opacity: 0; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);" id="mobile-shop-modal-content">
+                <p style="color: #4CAF50; font-size: 11px; font-weight: 900; letter-spacing: 2px; margin-bottom: 15px; text-transform: uppercase;">ПІДТВЕРДЖЕННЯ</p>
+                <h2 id="shop-confirm-question" style="font-size: 18px; font-weight: 700; line-height: 1.4; color: #fff; margin-bottom: 25px;">Ви дійсно хочете придбати цю роль?</h2>
+                
+                <div style="display: flex; gap: 10px; width: 100%;">
+                    <button onclick="closeMobileShopModal()" style="flex: 1; padding: 12px; font-size: 13px; font-weight: 700; border-radius: 10px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #aaa;">НІ</button>
+                    <button id="shop-confirm-btn" style="flex: 1; padding: 12px; font-size: 13px; font-weight: 700; border-radius: 10px; background: rgba(76, 175, 80, 0.15); border: 1px solid #4CAF50; color: #fff;">ТАК</button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <div id="error-info" class="error card glass-panel" style="display: none;"></div>
+    <div class="bottom-nav-container">
+        <div class="bottom-dynamic-island">
+            <div id="nav-item-profile" class="bottom-nav-btn active" onclick="switchMainTab('profile')">
+                <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z"></path><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path></svg>
+                <span>Профіль</span>
+            </div>
+            <div id="nav-item-news" class="bottom-nav-btn" onclick="switchMainTab('news')">
+                <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path><path d="M2 12h20"></path></svg>
+                <span>Новини</span>
+            </div>
+            <div id="nav-item-convoys" class="bottom-nav-btn" onclick="switchMainTab('convoys')">
+                <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="12" height="13" rx="2"></rect><path d="M15 8h3l3 4v4h-6"></path><circle cx="6.5" cy="18.5" r="2.5"></circle><circle cx="17.5" cy="18.5" r="2.5"></circle><line x1="10" y1="18" x2="15" y2="18"></line></svg>
+                <span>Конвої</span>
+            </div>
+            <div id="nav-item-shop" class="bottom-nav-btn" onclick="switchMainTab('shop')">
+                <svg class="nav-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                <span>Магазин</span>
+            </div>
+        </div>  
+    </div>
 
     <script>
         // Ініціалізуємо Telegram Mini App
         window.Telegram.WebApp.ready();
-        
-        // Розширюємо на весь екран
         window.Telegram.WebApp.expand(); 
 
         const initDataUnsafe = window.Telegram.WebApp.initDataUnsafe;
-        
-        // Дістаємо ID користувача Telegram
-        const telegramId = initDataUnsafe.user ? initDataUnsafe.user.id : null;
-        
+    
+        const telegramId = initDataUnsafe.user ? initDataUnsafe.user.id : null; 
+
         const statusDiv = document.getElementById("status");
         const userInfoDiv = document.getElementById("user-info");
         const errorInfoDiv = document.getElementById("error-info");
@@ -89,8 +254,11 @@
             errorInfoDiv.innerText = "Помилка: Не вдалося отримати ваш Telegram ID. Відкрийте цей додаток через бота в Telegram.";
         } else {
             statusDiv.innerText = "Авторизація... (ID: " + telegramId + ")";
-            
-            // Відправляємо запит на сервер
+            statusDiv.style.display = "none"; 
+
+            // =========================================================================
+            // === АКТИВНИЙ БЛОК: Запит до бекенду із заглушкою ID ===
+            // =========================================================================
             fetch("https://api.neocrime.space/api/tg_login", {
                 method: "POST",
                 headers: {
@@ -103,33 +271,81 @@
                 statusDiv.style.display = "none";
                 
                 if (data.status === "success") {
-                    // 1. Приховуємо екран завантаження та показуємо контент
                     document.getElementById("loading-screen").style.display = "none";
                     userInfoDiv.style.display = "block";
+                    
+                    document.querySelector(".bottom-nav-container").style.display = "block";
 
-                    // 2. Базові дані профілю
                     document.getElementById("avatar").src = data.avatar;
                     document.getElementById("name").innerText = data.name;
                     document.getElementById("level").innerText = data.level;
-                    document.getElementById("balance").innerText = data.balance + " CC";
 
-                    // 3. Логика Прогрес-бару КМ (ОБНОВЛЕНО)
+                    // Встановлення рангу
+                    document.getElementById("rank-badge").innerText = data.rank || "Невідомо";
+                    
+                    // Обробка даних TruckersMP
+                    if (data.tmp_name) {
+                        document.getElementById('tmp-name').innerText = data.tmp_name;
+                        document.getElementById('tmp-avatar').src = data.tmp_avatar;
+                        document.getElementById('tmp-join').innerText = data.tmp_joinDate;
+                        
+                        let banDot = document.getElementById('ban-dot');
+                        let banStatus = document.getElementById('ban-status');
+                        
+                        if (data.tmp_banned) {
+                            banDot.className = 'status-dot red';
+                            banStatus.innerText = 'ЗАБАНЕНИЙ';
+                            banStatus.style.color = '#ff3333';
+                        } else {
+                            banDot.className = 'status-dot green';
+                            banStatus.innerText = 'НЕ В БАНІ';
+                            banStatus.style.color = '#4CAF50';
+                        }
+                        
+                        document.getElementById('ban-count').innerText = data.tmp_bansCount;
+                    }
+                    
+                    // Анімація цифр балансу з роздільниками-комами
+                    animateNumbers("balance", 0, data.balance, 1000, " CC");
+
+                    // Ініціалізація серії роботи та таймера
+                    if(data.work_streak && data.work_streak > 0) {
+                        document.getElementById('work-streak').style.display = 'block';
+                        document.getElementById('streak-count').innerText = data.work_streak;
+                    }
+                    // Передаємо час останньої роботи (з бекенду)
+                    updateWorkTimer(data.last_work || 0);
+
+                    // Логіка Прогрес-бару КМ з анімацією завантаження
                     let km = parseInt(String(data.km).replace(/\s/g, '')) || 0;
                     let nextKm = 5000;
+                    let kmPercent = 0;
+
+                    // Анімація цифр загального пробігу
+                    animateNumbers("total-mileage", 0, km, 1000, " км");
+                    checkTgQuizStatus();
+                    
+                    // ФИКС БАГУ: Тепер тут виводяться реальні кілометри за місяць, які прилітають із бекенду
+                    let monthKm = parseInt(data.month_km) || 0;
+                    document.getElementById("month-mileage").innerText = monthKm.toLocaleString('en-US');
                     
                     if (km >= 100000) {
-                        document.getElementById("km-text").innerHTML = `${km} / &infin;`;
-                        document.getElementById("km-bar").style.width = `100%`;
+                        document.getElementById("km-text").innerHTML = `${km.toLocaleString('en-US')} / &infin;`;
+                        kmPercent = 100;
                     } else {
                         if (km >= 30000) nextKm = 100000;
                         else if (km >= 5000) nextKm = 30000;
                         
-                        let kmPercent = (km / nextKm) * 100;
-                        document.getElementById("km-text").innerText = `${km} / ${nextKm} км`;
-                        document.getElementById("km-bar").style.width = `${kmPercent}%`;
+                        kmPercent = (km / nextKm) * 100;
+                        document.getElementById("km-text").innerText = `${km.toLocaleString('en-US')} / ${nextKm.toLocaleString('en-US')} км`;
                     }
 
-                    // 4. Логіка Прогрес-бару EXP
+                    document.getElementById("km-bar").style.width = `0%`;
+                    setTimeout(() => {
+                        document.getElementById("km-bar").style.width = `${kmPercent}%`;
+                    }, 100);
+
+                    // Логіка Прогрес-бару EXP
                     let totalExp = data.exp || 0;
                     let level = 1;
                     let remainingExp = totalExp;
@@ -161,12 +377,10 @@
                     let expPercent = level === 100 ? 100 : (remainingExp / reqExp) * 100;
                     document.getElementById("exp-text").innerText = `${remainingExp} / ${reqExp} EXP`;
                     
-                    // Невелика затримка для красивої анімації смужки
                     setTimeout(() => {
                         document.getElementById("exp-bar").style.width = `${expPercent}%`;
                     }, 100);
 
-                    // 5. Зберігаємо session_token (ИСПРАВЛЕНО)
                     if (data.session_token) {
                         localStorage.setItem('session_token', data.session_token);
                     }
@@ -180,14 +394,1047 @@
             });
         }
 
-        // Заглушка для будущей логики магазина подарков
         function openGiftShop() {
             const giftBtn = document.querySelector('.gift-btn');
             if (giftBtn.classList.contains('disabled')) return;
-            
             alert("Магазин подарунків у розробці!");
         }
 
+        // Функція плавної анімації цифр з підтримкою роздільників
+        function animateNumbers(elementId, start, end, duration, suffix = "") {
+            const obj = document.getElementById(elementId);
+            const startTime = performance.now();
+            
+            function updateNumber(currentTime) {
+                const elapsedTime = currentTime - startTime;
+                if (elapsedTime >= duration) {
+                    obj.innerText = end.toLocaleString('en-US') + suffix;
+                } else {
+                    const progress = elapsedTime / duration;
+                    const easeOutProgress = progress * (2 - progress);
+                    const currentValue = Math.floor(start + (end - start) * easeOutProgress);
+                    obj.innerText = currentValue.toLocaleString('en-US') + suffix;
+                    requestAnimationFrame(updateNumber);
+                }
+            }
+            requestAnimationFrame(updateNumber);
+        }
+
+        // =========================================================================
+        // ОНОВЛЕНА ЛОГІКА ТОП ВОДІЇВ З ПЛАВНОЮ АНІМАЦІЄЮ ЗВЕРХУ-ВНИЗ
+        // =========================================================================
+        let cachedMonthLeaders = null;
+        let cachedAllTimeLeaders = null;
+        let currentTab = 'month';
+
+        function showLeaderboardSection() {
+            document.getElementById('user-info').style.display = 'none';
+            document.getElementById('leaderboard-section').style.display = 'block';
+            switchLeaderboardTab('month'); 
+        }
+
+        function hideLeaderboardSection() {
+            document.getElementById('leaderboard-section').style.display = 'none';
+            document.getElementById('user-info').style.display = 'block';
+        }
+
+        function switchLeaderboardTab(tab) {
+            currentTab = tab;
+            document.getElementById('tab-month').classList.remove('active');
+            document.getElementById('tab-all').classList.remove('active');
+            document.getElementById('tab-' + tab).classList.add('active');
+            
+            const listContainer = document.getElementById('leaderboard-list');
+            // Очищуємо старі картки перед новою анімацією
+            listContainer.innerHTML = '';
+            
+            if (tab === 'month') {
+                if (cachedMonthLeaders) {
+                    renderLeaderboardData(cachedMonthLeaders);
+                } else {
+                    listContainer.innerHTML = '<div style="text-align:center; padding: 40px; color: #888; font-weight: bold;">Завантаження...</div>';
+                    fetch("https://api.neocrime.space/top_drivers?type=month")
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.status === "success" && currentTab === 'month') {
+                            cachedMonthLeaders = data.drivers;
+                            renderLeaderboardData(data.drivers);
+                        }
+                    });
+                }
+            } else if (tab === 'all') {
+                if (cachedAllTimeLeaders) {
+                    renderLeaderboardData(cachedAllTimeLeaders);
+                } else {
+                    listContainer.innerHTML = '<div style="text-align:center; padding: 40px; color: #888; font-weight: bold;">Завантаження...</div>';
+                    fetch("https://api.neocrime.space/top_drivers?type=all")
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.status === "success" && currentTab === 'all') {
+                            cachedAllTimeLeaders = data.drivers;
+                            renderLeaderboardData(data.drivers);
+                        }
+                    });
+                }
+            }
+        }
+
+        function renderLeaderboardData(drivers) {
+            const listContainer = document.getElementById('leaderboard-list');
+            listContainer.innerHTML = '';
+            
+            if (!drivers || drivers.length === 0) {
+                listContainer.innerHTML = '<div style="text-align:center; padding: 40px; color: #666;">Немає даних</div>';
+                return;
+            }
+
+            drivers.forEach((driver, index) => {
+                const rank = index + 1;
+                let rankDisplay = `#${rank}`;
+                
+                if (rank === 1) rankDisplay = '🥇';
+                else if (rank === 2) rankDisplay = '🥈';
+                else if (rank === 3) rankDisplay = '🥉';
+
+                const kmFormatted = parseInt(driver.km_total).toLocaleString('en-US');
+                const avatar = driver.avatar_url || "https://i.ibb.co/60qZq1c/default-avatar.png";
+                const name = driver.display_name || "Невідомо";
+
+                const cardHtml = `
+                    <div class="card glass-panel leaderboard-cascade-card" style="margin-bottom: 12px; padding: 14px 18px;">
+                        <div style="display: flex; align-items: center; width: 100%; justify-content: space-between;">
+                            <div style="display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1;">
+                                <div class="leader-rank-num" style="font-weight: 900; font-size: 15px; width: 28px; text-align: center; flex-shrink: 0;">${rankDisplay}</div>
+                                <img src="${avatar}" alt="avatar" style="width: 44px; height: 44px; border-radius: 12px; object-fit: cover; flex-shrink: 0; border: 1px solid rgba(255,255,255,0.1);">
+                                <div style="display: flex; flex-direction: column; min-width: 0;">
+                                    <span style="font-weight: 700; font-size: 14px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${name}</span>
+                                    <span style="font-size: 11px; color: #666; font-weight: 700; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px;">Водій компанії</span>
+                                </div>
+                            </div>
+                            <div style="font-weight: 900; font-size: 16px; color: #fff; text-align: right; flex-shrink: 0; margin-left: 10px; letter-spacing: 0.5px;">
+                                ${kmFormatted} <span style="font-size: 10px; color: #555; font-weight: 900; margin-left: 1px;">КМ</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Створюємо елемент та додаємо його в DOM
+                const template = document.createElement('div');
+                template.innerHTML = cardHtml.trim();
+                const cardElement = template.firstChild;
+                listContainer.appendChild(cardElement);
+
+                // Ефект каскадного вильоту: кожна наступна картка з'являється трохи пізніше
+                setTimeout(() => {
+                    cardElement.classList.add('show');
+                }, index * 40); 
+            }); // <--- ВОТ ЗДЕСЬ ЗАКАНЧИВАЕТСЯ ЦИКЛ ВОДИТЕЛЕЙ
+
+            // === ДОБАВЛЯЕМ ОТСТУП ОДИН РАЗ ПОСЛЕ ВСЕХ КАРТОЧЕК ===
+            const spacer = document.createElement('div');
+            spacer.style.height = '160px'; // Высота примерно 2 карточек с отступами
+            spacer.style.opacity = '0';
+            spacer.style.pointerEvents = 'none';
+            listContainer.appendChild(spacer);
+
+            };
+
+// ==========================================
+        // ЛОГІКА КНОПКИ WORK (З ОНОВЛЕНИМИ ПЛАШКАМИ)
+        // ==========================================
+        let workInterval;
+
+        function updateWorkTimer(lastWorkTs) {
+            clearInterval(workInterval);
+            let btn = document.getElementById('work-btn');
+            
+            function checkCooldown() {
+                let now = Math.floor(Date.now() / 1000);
+                let cooldown = 24 * 60 * 60; // 24 години
+                let diff = cooldown - (now - lastWorkTs);
+                
+                if (diff <= 0 || lastWorkTs === 0) {
+                    btn.className = "work-btn-container active";
+                    btn.title = "Отримати зарплату з бонусом +50%!";
+                    btn.onclick = clickWorkButton;
+                    clearInterval(workInterval);
+                } else {
+                    btn.className = "work-btn-container disabled";
+                    let h = Math.floor(diff / 3600);
+                    let m = Math.floor((diff % 3600) / 60);
+                    btn.title = `Доступно через ${h}г ${m}хв`;
+                    // ВАЖЛИВО: Ми більше не ставимо onclick = null. 
+                    // Залишаємо виклик функції, щоб вона сама показала плашку з КД!
+                    btn.onclick = clickWorkButton; 
+                }
+            }
+            checkCooldown();
+            workInterval = setInterval(checkCooldown, 60000);
+        }
+
+        function updateExpUI(newTotalExp) {
+            const tiers = [
+                { min: 1, max: 10, req: 300 }, { min: 11, max: 20, req: 500 },
+                { min: 21, max: 30, req: 800 }, { min: 31, max: 40, req: 1200 },
+                { min: 41, max: 50, req: 1700 }, { min: 51, max: 60, req: 2300 },
+                { min: 61, max: 70, req: 3000 }, { min: 71, max: 80, req: 3800 },
+                { min: 81, max: 90, req: 4700 }, { min: 91, max: 100, req: 6000 }
+            ];
+
+            let level = 1;
+            let remainingExp = newTotalExp;
+            let reqExp = 300;
+
+            while (true) {
+                let currentTier = tiers.find(t => level >= t.min && level <= t.max);
+                if (!currentTier || level === 100) {
+                    reqExp = currentTier ? currentTier.req : 0;
+                    break;
+                }
+                if (remainingExp >= currentTier.req) {
+                    remainingExp -= currentTier.req;
+                    level++;
+                } else {
+                    reqExp = currentTier.req;
+                    break;
+                }
+            }
+
+            // Обновляем текст уровня
+            document.getElementById('level').innerText = level;
+            
+            // Статичне оновлення тексту EXP (правильний ID і без анімації)
+            document.getElementById("exp-text").innerText = `${remainingExp} / ${reqExp} EXP`;
+            
+            // Обновляем ширину полоски
+            let expPercent = level === 100 ? 100 : (remainingExp / reqExp) * 100;
+            document.getElementById("exp-bar").style.width = `${expPercent}%`;
+        }
+
+        async function clickWorkButton() {
+            let btn = document.getElementById('work-btn');
+            
+            // 1. ПЕРЕВІРКА НА КУЛДАУН (якщо кнопка сіра)
+            if (btn.classList.contains('disabled')) {
+                // Викликаємо красиву плашку зверху екрана
+                if (typeof showMobileToast === "function") {
+                    showMobileToast(btn.title, true, "⏳");
+                } else {
+                    window.Telegram.WebApp.showAlert(btn.title);
+                }
+                return; // Обриваємо функцію, щоб запит на бекенд не пішов
+            }
+
+            // 2. Якщо КД немає - починаємо запит
+            btn.innerHTML = "⏳";
+            btn.onclick = null; // Тимчасово блокуємо від спаму кліками
+            
+            try {
+                let response = await fetch("https://api.neocrime.space/api/claim_work", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ token: localStorage.getItem('session_token') })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP Error: ${response.status}`);
+                }
+
+                let res = await response.json();
+                
+                if(res.status === "success") {
+                    btn.innerHTML = "🎁";
+
+                    // ТУТ БЫЛА ОШИБКА: data.exp_total заменено на res.exp_total
+                    updateExpUI(res.exp_total); 
+                    
+                    // Анімація додавання балансу
+                    let currentBalance = parseInt(document.getElementById("balance").innerText.replace(/,/g, '').replace(' CC', '')) || 0;
+                    animateNumbers("balance", currentBalance, res.balance, 1000, " CC");
+                    
+                    // Одразу синхронізуємо баланс для магазину
+                    let shopBalanceEl = document.getElementById('shop-balance-display');
+                    if (shopBalanceEl) shopBalanceEl.innerText = Number(res.balance).toLocaleString('en-US') + " CC";
+
+                    // Оновлення рівня і стріку
+                    document.getElementById('level').innerText = res.level;
+                    document.getElementById('work-streak').style.display = 'block';
+                    document.getElementById('streak-count').innerText = res.work_streak;
+                    
+                    updateWorkTimer(res.last_work);
+                    
+                    // УСПІШНА ПЛАШКА ЗАМІСТЬ СТАРОГО АЛЕРТУ
+                    if (typeof showMobileToast === "function") {
+                        showMobileToast(`Отримано ${res.reward} CC та ${res.exp} EXP!`, false, "🎁");
+                    } else {
+                        window.Telegram.WebApp.showAlert(`Зарплата! Отримано ${res.reward} CC та ${res.exp} EXP`);
+                    }
+
+                    if (window.Telegram && window.Telegram.WebApp.HapticFeedback) {
+                        window.Telegram.WebApp.HapticFeedback.notificationOccurred("success");
+                    }
+                    
+                } else if (res.status === "cooldown") {
+                    btn.innerHTML = "🎁";
+                    updateWorkTimer(Math.floor(Date.now() / 1000));
+                } else {
+                    // Якщо бекенд повернув помилку
+                    btn.innerHTML = "🎁";
+                    btn.className = "work-btn-container active";
+                    btn.onclick = clickWorkButton;
+                    
+                    if (typeof showMobileToast === "function") {
+                        showMobileToast(res.reason || "Помилка сервера", true, "❌");
+                    } else {
+                        window.Telegram.WebApp.showAlert(res.reason || "Помилка сервера");
+                    }
+                }
+            } catch (error) {
+                // Якщо пропав інтернет
+                btn.innerHTML = "🎁";
+                btn.className = "work-btn-container active"; 
+                btn.onclick = clickWorkButton;
+                
+                if (typeof showMobileToast === "function") {
+                    showMobileToast("Помилка з'єднання з бекендом", true, "❌");
+                } else {
+                    window.Telegram.WebApp.showAlert("Помилка з'єднання з бекендом. Зазирни в консоль сервера!");
+                }
+                console.error("Work Error:", error);
+            }
+        }
+
+        // Нові хелпер-функції для інтеграції лідерборду всередині сторінки профілю
+        function openInternalLeaderboard() {
+            showLeaderboardSection();
+        }
+
+        function closeInternalLeaderboard() {
+            hideLeaderboardSection();
+        }
+
+        // =========================================================================
+        // СИСТЕМА ПЕРЕМИКАННЯ ГОЛОВНИХ ВКЛАДОК ДОДАТКУ
+        // =========================================================================
+        function switchMainTab(tabName) {
+            // Запобігаємо збоям під час завантаження
+            if (document.getElementById("loading-screen").style.display !== "none") return;
+
+            // Скидаємо активні класи з кнопок меню
+            document.querySelectorAll('.bottom-nav-btn').forEach(btn => btn.classList.remove('active'));
+            // Скидаємо активні класи зі сторінок контенту
+            document.querySelectorAll('.app-tab-page').forEach(page => page.classList.remove('active'));
+
+            // Активуємо потрібну кнопку та сторінку
+            document.getElementById(`nav-item-${tabName}`).classList.add('active');
+            document.getElementById(`tab-content-${tabName}`).classList.add('active');
+
+            // Легка вібрація при переході по меню для ефекту нативності
+            if (window.Telegram && window.Telegram.WebApp.HapticFeedback) {
+                window.Telegram.WebApp.HapticFeedback.impactOccurred("light");
+            }
+        }
+
+        // =========================================================================
+        // ЭСТЕТИЧЕСКАЯ МОБИЛЬНАЯ СИСТЕМА НОВОСТЕЙ (БЕЛО-СЕРАЯ СТИЛИСТИКА)
+        // =========================================================================
+        let globalNewsData = [];
+        let globalNewsLoaded = false; // Додано прапорець блокування
+
+        function loadNews() {
+            const container = document.getElementById('news-feed-container');
+            
+            // Якщо контейнера немає або новини ВЖЕ завантажено - обриваємо функцію
+            if(!container || globalNewsLoaded) return;
+            
+            globalNewsLoaded = true; // Блокуємо будь-які подальші спроби завантаження
+            
+            container.innerHTML = '<div style="text-align: center; color: #666; padding: 40px; font-weight: bold; font-size: 13px;">ЗАВАНТАЖЕННЯ НОВИН... 📰</div>';
+            
+            fetch("https://api.neocrime.space/news")
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === "success") {
+                    container.innerHTML = '';
+                    globalNewsData = data.news;
+
+                    if (globalNewsData.length === 0) {
+                        container.innerHTML = '<div class="glass-panel card" style="text-align: center; color: #888; font-size: 13px;">Наразі свіжих новин немає.</div>';
+                        return;
+                    }
+
+                    globalNewsData.forEach((item, index) => {
+                        let card = document.createElement('div');
+                        card.className = 'glass-panel card leaderboard-cascade-card'; 
+                        card.style.marginBottom = '15px';
+                        card.style.display = 'flex';
+                        card.style.flexDirection = 'column';
+                        
+                        let photoHtml = item.photo_link ? `<img src="${item.photo_link}" class="news-thumb" style="margin-bottom: 12px;" onerror="this.style.display='none'">` : '';
+                        
+                        card.innerHTML = `
+                            ${photoHtml}
+                            <h3 class="news-card-title">${item.title || 'Без заголовка'}</h3>
+                            <p class="news-card-summary">${item.summary || 'Опис відсутній.'}</p>
+                            <div class="news-separator"></div>
+                            <div class="news-footer-container">
+                                <span class="news-footer-author">${item.author || 'Адміністрація'}</span>
+                                <span>${item.date || '-'}</span>
+                            </div>
+                            <button class="shop-btn news-open-btn" onclick="openMobileNews(${index})">ДЕТАЛЬНІШЕ</button>
+                        `;
+                        container.appendChild(card);
+
+                        // Каскадна анімація
+                        setTimeout(() => {
+                            card.classList.add('show');
+                        }, index * 50); 
+                    });
+                } else {
+                    container.innerHTML = '<div style="color: #aaaaaa; text-align: center; padding: 20px; font-size: 13px;">Помилка завантаження контенту.</div>';
+                    globalNewsLoaded = false; // Дозволяємо спробувати ще раз, якщо сталась помилка
+                }
+            })
+            .catch(err => {
+                console.error("News Fetch Error:", err);
+                container.innerHTML = '<div style="color: #aaaaaa; text-align: center; padding: 20px; font-size: 13px;">Помилка з\'єднання з сервером.</div>';
+                globalNewsLoaded = false;
+            });
+        }
+
+        function openMobileNews(index) {
+            let newsItem = globalNewsData[index];
+            if (!newsItem) return;
+
+            // Наполняем поля текстом (чисто белый и серый тона)
+            document.getElementById('mobile-news-title').innerText = newsItem.title || 'Без заголовка';
+            document.getElementById('mobile-news-author').innerText = `Автор: ${newsItem.author || 'Адміністрація'}`;
+            document.getElementById('mobile-news-date').innerText = newsItem.date || '-';
+            document.getElementById('mobile-news-desc').innerText = newsItem.description || newsItem.summary || 'Опис відсутній.';
+            
+            let img = document.getElementById('mobile-news-img');
+            if (newsItem.photo_link && newsItem.photo_link.trim() !== "") {
+                img.src = newsItem.photo_link;
+                img.style.display = "block";
+            } else {
+                img.style.display = "none";
+            }
+
+            // Переключаем отображение: прячем общую ленту, открываем изолированную вкладку новости
+            document.getElementById('news-main-view').style.display = 'none';
+            document.getElementById('news-opened-view').style.display = 'block';
+
+            // Скроллим в самый верх развернутой новости
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            if (window.Telegram && window.Telegram.WebApp.HapticFeedback) {
+                window.Telegram.WebApp.HapticFeedback.impactOccurred("medium");
+            }
+        }
+
+        function closeMobileNews() {
+            // Закрываем вкладку конкретной новости и возвращаем ленту
+            document.getElementById('news-opened-view').style.display = 'none';
+            document.getElementById('news-main-view').style.display = 'block';
+
+            if (window.Telegram && window.Telegram.WebApp.HapticFeedback) {
+                window.Telegram.WebApp.HapticFeedback.impactOccurred("light");
+            }
+        }
+
+        // Перехоплення кліку по меню для завантаження контенту
+        const originalSwitchMainTab = switchMainTab;
+        switchMainTab = function(tabName) {
+            originalSwitchMainTab(tabName);
+            
+            // ФІКС: Будь-яке натискання на нижнє меню автоматично закриває Лідерборд 
+            // і повертає сторінку Профілю до нормального стану.
+            hideLeaderboardSection();
+            
+            if (tabName === 'news') {
+                document.getElementById('news-opened-view').style.display = 'none';
+                document.getElementById('news-main-view').style.display = 'block';
+                loadNews();
+            }
+            if (tabName === 'convoys') {
+                loadConvoys();
+            }
+            // Додаємо запуск магазину
+            if (tabName === 'shop') {
+                loadShop();
+            }
+        };
+
+        // =========================================================================
+        // СИСТЕМА КОНВОЇВ (МОБІЛЬНА АДАПТАЦІЯ ДЕСКТОПНОЇ ВЕРСІЇ)
+        // =========================================================================
+        let globalConvoysLoaded = false;
+
+        function loadConvoys() {
+            const container = document.getElementById('convoys-list-container');
+            
+            // Якщо конвої ВЖЕ завантажено - просто показуємо вкладку без анімації
+            if(!container || globalConvoysLoaded) return;
+
+            globalConvoysLoaded = true; // Блокуємо відразу
+
+            container.innerHTML = '<div style="text-align: center; color: #666; padding: 40px; font-weight: bold; font-size: 13px;">ЗАВАНТАЖЕННЯ КОНВОЇВ... 🚛</div>';
+
+            fetch("https://api.neocrime.space/convoys")
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === "success") {
+                    container.innerHTML = '';
+
+                    if (data.convoys.length === 0) {
+                        container.innerHTML = '<div class="glass-panel card" style="text-align: center; color: #888; font-size: 13px;">Наразі конвоїв не заплановано.</div>';
+                        return;
+                    }
+
+                    data.convoys.forEach((convoy, index) => {
+                        let card = document.createElement('div');
+                        card.className = 'glass-panel card leaderboard-cascade-card'; 
+                        card.style.marginBottom = '15px';
+                        card.style.padding = '15px 18px';
+                        card.style.display = 'flex';
+                        card.style.flexDirection = 'column';
+
+                        let dateParts = convoy.convoy_date ? convoy.convoy_date.split('.') : ['00', '00'];
+                        let shortDate = `${dateParts[0]}.${dateParts[1]}`;
+
+                        card.innerHTML = `
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                                <div style="display: flex; gap: 15px; align-items: center; min-width: 0;">
+                                    <div style="font-size: 22px; font-weight: 900; color: #fff; flex-shrink: 0;">${shortDate}</div>
+                                    <div style="min-width: 0;">
+                                        <div style="font-weight: 900; font-size: 15px; color: #fff; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${convoy.name || 'Конвой'}</div>
+                                        <div style="font-weight: 700; font-size: 11px; color: #aaaaaa; text-transform: uppercase;">${convoy.type || 'Компанійський'}</div>
+                                    </div>
+                                </div>
+                                <img src="${convoy.route_link || 'https://i.ibb.co/60qZq1c/default-avatar.png'}" 
+                                     style="width: 55px; height: 55px; border-radius: 10px; object-fit: cover; border: 1px solid rgba(255,255,255,0.15); cursor: pointer; flex-shrink: 0;"
+                                     onclick="openMobileMapViewer('${convoy.route_link}')"
+                                     onerror="this.src='https://i.ibb.co/60qZq1c/default-avatar.png'">
+                            </div>
+
+                            <div style="background: rgba(0,0,0,0.35); border-radius: 8px; padding: 10px; margin-bottom: 12px; text-align: center; font-weight: 700; font-size: 13px; color: #ddd;">
+                                ${convoy.departure_city} <span style="color: #ff3333; margin: 0 5px; font-weight: 900;">→</span> ${convoy.arrival_city}
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                                <div style="display: flex; flex-direction: column; gap: 4px;">
+                                    <div style="display: flex; justify-content: space-between; width: 90px; font-size: 12px;">
+                                        <span style="color: #888; font-weight: 700; font-size: 10px; align-self: center;">ЗБІР</span>
+                                        <span style="color: #eee; font-weight: 900;">${convoy.gather_time}</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; width: 90px; font-size: 12px;">
+                                        <span style="color: #888; font-weight: 700; font-size: 10px; align-self: center;">ВИЇЗД</span>
+                                        <span style="color: #eee; font-weight: 900;">${convoy.departure_time}</span>
+                                    </div>
+                                </div>
+                                <div style="font-weight: 900; font-size: 18px; color: #fff;">
+                                    ${convoy.distance} <span style="font-size: 11px; color: #888; font-weight: 700;">КМ</span>
+                                </div>
+                            </div>
+                        `;
+                        container.appendChild(card);
+
+                        // Каскадна анімація
+                        setTimeout(() => {
+                            card.classList.add('show');
+                        }, index * 50); 
+                    });
+                } else {
+                    container.innerHTML = '<div style="color: #aaaaaa; text-align: center; padding: 20px; font-size: 13px;">Помилка завантаження контенту.</div>';
+                    globalConvoysLoaded = false;
+                }
+            })
+            .catch(err => {
+                console.error("Convoys Fetch Error:", err);
+                container.innerHTML = '<div style="color: #aaaaaa; text-align: center; padding: 20px; font-size: 13px;">Помилка з\'єднання з сервером.</div>';
+                globalConvoysLoaded = false;
+            });
+        }
+
+        // Функції для модалки з картою (з плавною анімацією)
+        function openMobileMapViewer(url) {
+            if(!url) return;
+            const modal = document.getElementById('mobile-map-modal');
+            const img = document.getElementById('mobile-map-img');
+            
+            img.src = url;
+            // Додаємо клас з анімацією появи
+            modal.classList.add('map-modal-active');
+            
+            if (window.Telegram && window.Telegram.WebApp.HapticFeedback) {
+                window.Telegram.WebApp.HapticFeedback.impactOccurred("medium");
+            }
+        }
+
+        function closeMobileMapViewer() {
+            const modal = document.getElementById('mobile-map-modal');
+            
+            // Запускаємо анімацію зникнення
+            modal.classList.add('map-modal-closing');
+            
+            // Чекаємо 250мс (поки пройде анімація) і повністю ховаємо елемент
+            setTimeout(() => {
+                modal.classList.remove('map-modal-active');
+                modal.classList.remove('map-modal-closing');
+                document.getElementById('mobile-map-img').src = ''; // Очищаємо, щоб не блимало старе фото наступного разу
+            }, 250);
+            
+            if (window.Telegram && window.Telegram.WebApp.HapticFeedback) {
+                window.Telegram.WebApp.HapticFeedback.impactOccurred("light");
+            }
+        }
+
+
+        // =========================================================================
+        // СИСТЕМА МАГАЗИНУ РОЛЕЙ (З КД ТА ПЛАШКАМИ)
+        // =========================================================================
+        let globalShopLoaded = false;
+        let pendingPurchase = null;
+        
+        // Змінні для КД та Плашки
+        let lastPurchaseTime = 0; 
+        const SHOP_COOLDOWN_SECONDS = 15; 
+        let lastShopWarningTime = 0; 
+        let mobileToastTimeout = null; 
+        let mobileToastHideTimeout = null;
+
+        // Функція показу плашки
+        function showMobileToast(message, isWarning = false, customIcon = null) {
+            let toast = document.getElementById('mobile-toast');
+            let iconEl = document.getElementById('mobile-toast-icon');
+            
+            if (mobileToastTimeout) clearTimeout(mobileToastTimeout);
+            if (mobileToastHideTimeout) clearTimeout(mobileToastHideTimeout);
+
+            toast.classList.remove('active');
+            
+            mobileToastHideTimeout = setTimeout(() => {
+                document.getElementById('mobile-toast-text').innerText = message;
+                
+                if (isWarning) {
+                    iconEl.innerText = customIcon || "⏳";
+                    iconEl.style.color = "#ff9900";
+                    if (window.Telegram && window.Telegram.WebApp.HapticFeedback) {
+                        window.Telegram.WebApp.HapticFeedback.notificationOccurred("warning");
+                    }
+                } else {
+                    iconEl.innerText = customIcon || "🛒";
+                    iconEl.style.color = "#4CAF50";
+                }
+
+                toast.classList.add('active');
+
+                mobileToastTimeout = setTimeout(() => {
+                    toast.classList.remove('active');
+                }, 4000);
+                
+            }, 300); 
+        }
+
+        function loadShop() {
+            const container = document.getElementById('shop-list-container');
+            if(!container || globalShopLoaded) return;
+            globalShopLoaded = true; 
+
+            let mainBalance = document.getElementById('balance').innerText;
+            document.getElementById('shop-balance-display').innerText = mainBalance;
+
+            container.innerHTML = '<div style="text-align: center; color: #666; padding: 40px; font-weight: bold; font-size: 13px;">ЗАВАНТАЖЕННЯ ТОВАРІВ... 🛒</div>';
+
+            fetch("https://api.neocrime.space/api/tg_shop_get", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ token: localStorage.getItem('session_token') })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === "success") {
+                    container.innerHTML = '';
+                    let liveRoles = data.live_roles || [];
+
+                    if (data.items.length === 0) {
+                        container.innerHTML = '<div class="glass-panel card" style="text-align: center; color: #888; font-size: 13px;">Магазин порожній.</div>';
+                        return;
+                    }
+
+                    data.items.forEach((item, index) => {
+                        let roleId = String(item.role_id);
+                        let isOwned = false;
+                        
+                        if (liveRoles.includes(roleId)) {
+                            isOwned = true;
+                        } else if (data.purchased && data.purchased[roleId] !== undefined) {
+                            let expiry = data.purchased[roleId];
+                            if (expiry === null || expiry > (Date.now() / 1000)) {
+                                isOwned = true;
+                            }
+                        }
+
+                        let buttonsHtml = '';
+                        if (isOwned) {
+                            buttonsHtml = `<button class="mobile-shop-btn disabled" disabled>ВЖЕ ПРИДБАНО</button>`;
+                        } else {
+                            let btnGroup = [];
+                            if (item.price_temp !== null) {
+                                btnGroup.push(`<button class="mobile-shop-btn temp" onclick="openMobileShopModal('${item.id}', 'temp', '${item.title}', '${item.duration} днів')">${item.duration} дн. - ${Number(item.price_temp).toLocaleString('en-US')} CC</button>`);
+                            }
+                            if (item.price_perm !== null) {
+                                btnGroup.push(`<button class="mobile-shop-btn perm" onclick="openMobileShopModal('${item.id}', 'perm', '${item.title}', 'назавжди')">НАЗАВЖДИ - ${Number(item.price_perm).toLocaleString('en-US')} CC</button>`);
+                            }
+                            buttonsHtml = btnGroup.join('');
+                        }
+
+                        let card = document.createElement('div');
+                        card.className = 'glass-panel card leaderboard-cascade-card'; 
+                        card.style.marginBottom = '15px';
+                        card.style.display = 'flex';
+                        card.style.flexDirection = 'column';
+                        
+                        card.innerHTML = `
+                            <h3 class="news-card-title">${item.title}</h3>
+                            <p class="news-card-summary" style="margin-bottom: 12px;">${item.description}</p>
+                            <div style="display: flex; flex-direction: column; gap: 4px; margin-top: auto;">
+                                ${buttonsHtml}
+                            </div>
+                        `;
+                        container.appendChild(card);
+
+                        setTimeout(() => { card.classList.add('show'); }, index * 50); 
+                    });
+                } else {
+                    container.innerHTML = '<div style="color: #aaaaaa; text-align: center; padding: 20px; font-size: 13px;">Помилка завантаження магазину.</div>';
+                    globalShopLoaded = false;
+                }
+            })
+            .catch(err => {
+                console.error("Shop Fetch Error:", err);
+                container.innerHTML = '<div style="color: #aaaaaa; text-align: center; padding: 20px; font-size: 13px;">Помилка з\'єднання з сервером.</div>';
+                globalShopLoaded = false;
+            });
+        }
+
+        function openMobileShopModal(itemId, buyType, roleTitle, durationText) {
+            // ПЕРЕВІРКА КУЛДАУНУ
+            let currentTime = Date.now();
+            let timePassed = (currentTime - lastPurchaseTime) / 1000;
+            
+            if (timePassed < SHOP_COOLDOWN_SECONDS && lastPurchaseTime !== 0) {
+                if (currentTime - lastShopWarningTime >= 2000) {
+                    let timeLeft = Math.ceil(SHOP_COOLDOWN_SECONDS - timePassed);
+                    showMobileToast(`Зачекайте ще ${timeLeft} сек. перед покупкою!`, true);
+                    lastShopWarningTime = currentTime;
+                }
+                return; // Блокуємо відкриття модалки
+            }
+
+            pendingPurchase = { itemId, buyType, roleTitle, durationText };
+            document.getElementById('shop-confirm-question').innerText = `Бажаєте придбати роль "${roleTitle}" ${buyType === 'perm' ? 'назавжди' : 'на ' + durationText}?`;
+            
+            const modal = document.getElementById('mobile-shop-modal');
+            modal.classList.add('shop-modal-active');
+            
+            document.getElementById('shop-confirm-btn').onclick = executeMobilePurchase;
+            
+            if (window.Telegram && window.Telegram.WebApp.HapticFeedback) {
+                window.Telegram.WebApp.HapticFeedback.impactOccurred("medium");
+            }
+        }
+
+        function closeMobileShopModal() {
+            const modal = document.getElementById('mobile-shop-modal');
+            modal.classList.add('shop-modal-closing');
+            
+            setTimeout(() => {
+                modal.classList.remove('shop-modal-active');
+                modal.classList.remove('shop-modal-closing');
+                pendingPurchase = null;
+            }, 200);
+            
+            if (window.Telegram && window.Telegram.WebApp.HapticFeedback) {
+                window.Telegram.WebApp.HapticFeedback.impactOccurred("light");
+            }
+        }
+
+        function executeMobilePurchase() {
+            if (!pendingPurchase) return;
+            let { itemId, buyType, roleTitle, durationText } = pendingPurchase;
+
+            let execBtn = document.getElementById('shop-confirm-btn');
+            execBtn.innerText = "ОБРОБКА...";
+            execBtn.disabled = true;
+
+            fetch("https://api.neocrime.space/api/tg_shop_buy", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ token: localStorage.getItem('session_token'), item_id: itemId, buy_type: buyType })
+            })
+            .then(res => res.json())
+            .then(data => {
+                execBtn.innerText = "ТАК";
+                execBtn.disabled = false;
+
+                if (data.status === "success") {
+                    lastPurchaseTime = Date.now(); // Запускаємо кулдаун на 15 сек
+                    
+                    let formattedBalance = Number(data.balance).toLocaleString('en-US');
+                    document.getElementById('balance').innerText = formattedBalance + " CC";
+                    document.getElementById('shop-balance-display').innerText = formattedBalance + " CC";
+                    
+                    closeMobileShopModal();
+                    
+                    // Викликаємо плашку успіху
+                    showMobileToast(`Роль "${roleTitle}" успішно придбана!`, false);
+                    if (window.Telegram && window.Telegram.WebApp.HapticFeedback) {
+                        window.Telegram.WebApp.HapticFeedback.notificationOccurred("success");
+                    }
+
+                    // Перезавантажуємо магазин, щоб приховати кнопку
+                    globalShopLoaded = false;
+                    loadShop();
+                } else {
+                    closeMobileShopModal();
+                    showMobileToast(`Помилка: ${data.reason}`, true, "❌");
+                }
+            })
+            .catch(err => {
+                execBtn.innerText = "ТАК";
+                execBtn.disabled = false;
+                closeMobileShopModal();
+                showMobileToast("Помилка з'єднання з сервером.", true, "❌");
+            });
+        }
+
+        // =========================================================================
+        // СИСТЕМА ВІКТОРИНИ (QUIZ) ДЛЯ ТЕЛЕГРАМ
+        // =========================================================================
+        let quizTimerInterval;
+        let quizCooldownInterval;
+        let quizTimeLeft = 300;
+
+        function checkTgQuizStatus() {
+            fetch("https://api.neocrime.space/api/tg_quiz_get", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ token: localStorage.getItem('session_token') })
+            })
+            .then(res => res.json())
+            .then(data => {
+                let btn = document.getElementById('quiz-btn');
+                if (data.status === "cooldown") {
+                    let timeLeft = data.timeLeft;
+                    clearInterval(quizCooldownInterval);
+                    
+                    function updateBtn() {
+                        if (timeLeft <= 0) {
+                            btn.className = "quiz-island";
+                            btn.title = "Щоденна вікторина";
+                            clearInterval(quizCooldownInterval);
+                        } else {
+                            btn.className = "quiz-island cooldown";
+                            let h = Math.floor(timeLeft / 3600);
+                            let m = Math.floor((timeLeft % 3600) / 60);
+                            btn.title = `Доступно через ${h}г ${m}хв`;
+                            timeLeft--;
+                        }
+                    }
+                    updateBtn();
+                    quizCooldownInterval = setInterval(updateBtn, 1000);
+                } else {
+                    btn.className = "quiz-island";
+                    btn.title = "Щоденна вікторина";
+                    clearInterval(quizCooldownInterval);
+                }
+            });
+        }
+
+        function openMobileQuiz() {
+            let btn = document.getElementById('quiz-btn');
+            // Перевіряємо за новим класом 'cooldown'
+            if (btn.classList.contains('cooldown')) {
+                if (typeof showMobileToast === "function") {
+                    showMobileToast(btn.title, true, "⏳");
+                } else {
+                    window.Telegram.WebApp.showAlert(btn.title);
+                }
+                return;
+            }
+
+            const modal = document.getElementById('mobile-quiz-modal');
+            const content = document.getElementById('mobile-quiz-content');
+            modal.style.display = 'flex';
+            
+            setTimeout(() => {
+                content.style.opacity = '1';
+                content.style.transform = 'scale(1)';
+            }, 10);
+
+            document.getElementById('mobile-quiz-result').style.display = 'none';
+            document.getElementById('mobile-quiz-options').style.display = 'none';
+            document.getElementById('mobile-quiz-question').innerText = "Отримання питання...";
+            
+            quizTimeLeft = 300;
+            document.getElementById('quiz-timer').innerText = "05:00";
+
+            fetch("https://api.neocrime.space/api/tg_quiz_get", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ token: localStorage.getItem('session_token'), action: "start" })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === "ready") {
+                    document.getElementById('mobile-quiz-question').innerText = data.question;
+                    const optionsContainer = document.getElementById('mobile-quiz-options');
+                    optionsContainer.innerHTML = '';
+                    optionsContainer.style.display = 'grid';
+
+                    data.options.forEach((opt, idx) => {
+                        let optBtn = document.createElement('button');
+                        optBtn.className = 'mobile-quiz-btn';
+                        optBtn.id = `quiz-opt-${idx}`;
+                        optBtn.innerText = opt;
+                        optBtn.onclick = () => submitMobileQuizAnswer(idx);
+                        optionsContainer.appendChild(optBtn);
+                    });
+
+                    clearInterval(quizTimerInterval);
+                    quizTimerInterval = setInterval(() => {
+                        quizTimeLeft--;
+                        let m = Math.floor(quizTimeLeft / 60).toString().padStart(2, '0');
+                        let s = (quizTimeLeft % 60).toString().padStart(2, '0');
+                        document.getElementById('quiz-timer').innerText = `${m}:${s}`;
+                        
+                        if (quizTimeLeft <= 0) {
+                            clearInterval(quizTimerInterval);
+                            closeMobileQuiz();
+                        }
+                    }, 1000);
+                } else {
+                    document.getElementById('mobile-quiz-question').innerText = "Помилка завантаження.";
+                    setTimeout(closeMobileQuiz, 2000);
+                }
+            })
+            .catch(err => {
+                document.getElementById('mobile-quiz-question').innerText = "Помилка з'єднання.";
+                setTimeout(closeMobileQuiz, 2000);
+            });
+        }
+
+        function submitMobileQuizAnswer(index) {
+            clearInterval(quizTimerInterval);
+            document.querySelectorAll('.mobile-quiz-btn').forEach(b => b.disabled = true);
+            
+            let selectedBtn = document.getElementById(`quiz-opt-${index}`);
+            let origText = selectedBtn.innerText;
+            selectedBtn.innerText = "Перевірка...";
+
+            fetch("https://api.neocrime.space/api/tg_quiz_submit", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ token: localStorage.getItem('session_token'), answer_index: index })
+            })
+            .then(res => res.json())
+            .then(data => {
+                selectedBtn.innerText = origText;
+                let resultDiv = document.getElementById('mobile-quiz-result');
+                resultDiv.style.display = 'block';
+
+                if (data.status === "success") {
+
+                    // ТУТ БЫЛА ОШИБКА: res.exp_total заменено на data.exp_total
+                    updateExpUI(data.exp_total);
+                    
+                    // Оновлення балансу в UI
+                    let currentBalance = parseInt(document.getElementById("balance").innerText.replace(/,/g, '').replace(' CC', '')) || 0;
+                    animateNumbers("balance", currentBalance, data.balance, 1000, " CC");
+                    
+                    let shopBalanceEl = document.getElementById('shop-balance-display');
+                    if (shopBalanceEl) shopBalanceEl.innerText = Number(data.balance).toLocaleString('en-US') + " CC";
+                    
+                    if (data.level) document.getElementById('level').innerText = data.level;
+
+                    if (data.is_correct) {
+                        selectedBtn.classList.add('correct');
+                        resultDiv.innerHTML = `<h3 style="color:#4CAF50; margin: 0 0 5px 0;">✅ Правильно!</h3><p style="color:#ddd; font-size: 13px; margin:0;">Ви заробили ${data.reward} CC та ${data.exp} EXP</p>`;
+                        if (window.Telegram && window.Telegram.WebApp.HapticFeedback) window.Telegram.WebApp.HapticFeedback.notificationOccurred("success");
+                    } else {
+                        selectedBtn.classList.add('wrong');
+                        document.getElementById(`quiz-opt-${data.correct_idx}`).classList.add('correct');
+                        resultDiv.innerHTML = `<h3 style="color:#ff3333; margin: 0 0 5px 0;">❌ Неправильно!</h3><p style="color:#ddd; font-size: 13px; margin:0;">Штраф: <span style="color:#ff3333; font-weight:bold;">-${data.penalty} CC</span></p>`;
+                        if (window.Telegram && window.Telegram.WebApp.HapticFeedback) window.Telegram.WebApp.HapticFeedback.notificationOccurred("error");
+                    }
+
+                    setTimeout(() => {
+                        closeMobileQuiz();
+                        checkTgQuizStatus();
+                    }, 3500);
+                } else {
+                    selectedBtn.innerText = "Помилка";
+                    setTimeout(closeMobileQuiz, 2000);
+                }
+            })
+            .catch(err => {
+                selectedBtn.innerText = "Помилка";
+                setTimeout(closeMobileQuiz, 2000);
+            });
+        }
+
+        function closeMobileQuiz() {
+            const modal = document.getElementById('mobile-quiz-modal');
+            const content = document.getElementById('mobile-quiz-content');
+            
+            content.style.opacity = '0';
+            content.style.transform = 'scale(0.9)';
+            
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+
+
     </script>
+
+    <div id="leaderboard-section" style="display: none; width: 100%;">
+        <div class="top-nav-island">
+            <div class="dynamic-island">
+                <div id="tab-month" class="nav-btn active" onclick="switchLeaderboardTab('month')">За місяць</div>
+                <div id="tab-all" class="nav-btn" onclick="switchLeaderboardTab('all')">За весь час</div>
+            </div>
+            <button class="island-close-btn" onclick="hideLeaderboardSection()">✖</button>
+        </div>
+
+        <div id="top-drivers-container">
+            <div id="leaderboard-list" class="leaderboard-animate-container"></div>
+        </div>
+    </div>
+
+    <div id="mobile-toast" class="mobile-toast-island">
+        <div class="mobile-toast-content">
+            <span id="mobile-toast-icon" style="color: #4CAF50; font-weight: 900; margin-right: 8px;">🛒</span>
+            <span id="mobile-toast-text">Роль успішно придбана!</span>
+        </div>
+    </div>
+
+    <div id="mobile-quiz-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 10000; justify-content: center; align-items: center; flex-direction: column; backdrop-filter: blur(10px);">
+        <div class="glass-panel card" style="width: 90%; max-width: 400px; text-align: center; padding: 30px 20px; transform: scale(0.9); opacity: 0; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);" id="mobile-quiz-content">
+            <div id="quiz-timer" style="position: absolute; top: 15px; right: 20px; font-size: 20px; font-weight: 900; color: #fff;">05:00</div>
+            <p style="color: #ff66b2; font-size: 11px; font-weight: 900; letter-spacing: 2px; margin-bottom: 15px; margin-top: 10px;">ЩОДЕННА ВІКТОРИНА</p>
+            <h2 id="mobile-quiz-question" style="font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 25px; line-height: 1.4;">Завантаження...</h2>
+            
+            <div id="mobile-quiz-options" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%;">
+                </div>
+            
+            <div id="mobile-quiz-result" style="display: none; margin-top: 20px; padding: 15px; background: rgba(0,0,0,0.3); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1);">
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>

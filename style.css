@@ -9,7 +9,8 @@ body {
     margin: 0;
     color: #fff;
     font-family: 'Montserrat', sans-serif;
-    padding-top: 25px; /* Компенсация отсутствия хедера, чтобы контент не лип к экрану */
+    padding-top: 30px; /* Сместили весь интерфейс и аватарку на 5px вниз */
+    overscroll-behavior: none; /* ФІКС: Забороняє екрану смикатися вгору-вниз при упорі скролла */
 }
 
 .loading-container {
@@ -122,40 +123,940 @@ body {
     text-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
 }
 
-/* Кнопка подарка */
-.gift-btn {
-    width: 50px;
-    height: 50px;
-    background: transparent;
-    border-radius: 12px;
+/* --- КНОПКА РОБОТИ --- */
+.work-btn-container {
+    width: 65px;
+    height: 65px;
+    border-radius: 18px;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 0;
+    font-size: 32px;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+}
+
+.work-btn-container.active {
+    background: rgba(255, 215, 0, 0.1);
+    border: 2px solid #ffd700;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
     cursor: pointer;
+}
+
+.work-btn-container.active:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 25px rgba(255, 215, 0, 0.5);
+}
+
+.work-btn-container.disabled {
+    background: rgba(100, 100, 100, 0.1);
+    border: 2px solid #555;
+    filter: grayscale(100%);
+    cursor: not-allowed;
+}
+
+/* --- КНОПКА ТОП ВОДІЇВ --- */
+.top-btn-container {
+    width: 65px;
+    height: 65px;
+    border-radius: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    background: rgba(100, 100, 100, 0.1);
+    border: 2px solid #555;
+    cursor: pointer;
+}
+
+.top-btn-container:hover {
+    transform: scale(1.08);
+    border-color: #777; 
+    box-shadow: 0 0 15px rgba(100, 100, 100, 0.3); 
+}
+
+.top-btn-container svg {
+    transition: color 0.3s;
+}
+
+.top-btn-container:hover svg {
+    color: #fff !important;
+}
+
+/* --- ПРОБІГ --- */
+.mileage-month {
+    font-size: 11px;
+    color: #888;
+    margin-top: 4px;
+    font-weight: 600;
+}
+
+/* --- МОДАЛЬНЕ ВІКНО ЛІДЕРБОРДУ --- */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end; /* Виїжджає знизу як у Telegram */
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    width: 100%;
+    height: 85vh;
+    margin: 0;
+    border-radius: 20px 20px 0 0; /* Округлення тільки зверху */
+    display: flex;
+    flex-direction: column;
+    animation: slideUp 0.3s ease-out;
+    padding: 20px 15px;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #fff;
+    font-weight: 900;
+}
+
+.close-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #fff;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.close-btn:active { background: rgba(255, 255, 255, 0.3); }
+
+/* --- ПЕРЕМИКАЧ --- */
+.toggle-container {
+    display: flex;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    padding: 4px;
+    margin-bottom: 15px;
+}
+
+.toggle-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: #888;
+    padding: 8px 0;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 13px;
+    transition: all 0.3s;
+}
+
+.toggle-btn.active {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* --- СПИСОК ЛІДЕРІВ --- */
+.leaderboard-list {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+.leaderboard-list::-webkit-scrollbar { width: 4px; }
+.leaderboard-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
+
+.leader-card {
+    display: flex;
+    align-items: center;
+    background: rgba(20, 20, 20, 0.6);
+    border-radius: 12px;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Топ 3 світіння */
+.leader-card.rank-1 { border: 1px solid #FFD700; box-shadow: 0 0 15px rgba(255, 215, 0, 0.15); }
+.leader-card.rank-2 { border: 1px solid #C0C0C0; box-shadow: 0 0 15px rgba(192, 192, 192, 0.15); }
+.leader-card.rank-3 { border: 1px solid #CD7F32; box-shadow: 0 0 15px rgba(205, 127, 50, 0.15); }
+
+.leader-rank {
+    width: 30px;
+    font-weight: 900;
+    font-size: 15px;
+    color: #666;
+    text-align: center;
+}
+
+.leader-card.rank-1 .leader-rank { color: #FFD700; font-size: 20px; }
+.leader-card.rank-2 .leader-rank { color: #C0C0C0; font-size: 20px; }
+.leader-card.rank-3 .leader-rank { color: #CD7F32; font-size: 20px; }
+
+.leader-avatar {
+    width: 42px; height: 42px;
+    border-radius: 10px;
+    margin: 0 12px;
+    object-fit: cover;
+}
+
+.leader-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.leader-name {
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 140px;
+}
+
+.leader-role { font-size: 11px; color: #888; }
+
+.leader-km {
+    font-weight: 900;
+    font-size: 16px;
+    color: #fff;
+    text-align: right;
+}
+.leader-km span { font-size: 10px; color: #666; margin-left: 2px; }
+
+/* =========================================================================
+   ОПТИМІЗОВАНИЙ КОНТЕЙНЕР ЛІДЕРБОРДУ ТА СКРОЛЛУ
+   ========================================================================= */
+
+#top-drivers-container {
+    padding: 0 0 140px 0 !important; /* Отступ снизу, чтобы карточки не перекрывались меню */
+    overflow-y: auto !important;
+    max-height: calc(100vh - 120px) !important;
+    overflow-x: hidden !important;
+    width: 100% !important;
+}
+
+/* Полностью отключаем клики, ховеры и подсветку при нажатии */
+.leaderboard-cascade-card {
+    opacity: 0;
+    transform: translateY(-25px);
+    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform, opacity;
+    pointer-events: none !important; /* Блокирует любые нажатия и мобильный эффект :active */
+}
+
+.leaderboard-cascade-card.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Фиксируем статичные цвета премиум-панелей ТОП-3 без ховеров */
+.card.glass-panel.island-rank-1 {
+    border: 1px solid rgba(255, 215, 0, 0.2) !important;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.03), rgba(255, 215, 0, 0.01)) !important;
+    box-shadow: 0 8px 32px 0 rgba(255, 215, 0, 0.05) !important;
+}
+.card.glass-panel.island-rank-2 {
+    border: 1px solid rgba(192, 192, 192, 0.2) !important;
+    background: linear-gradient(135deg, rgba(192, 192, 192, 0.03), rgba(192, 192, 192, 0.01)) !important;
+    box-shadow: 0 8px 32px 0 rgba(192, 192, 192, 0.05) !important;
+}
+.card.glass-panel.island-rank-3 {
+    border: 1px solid rgba(205, 127, 50, 0.2) !important;
+    background: linear-gradient(135deg, rgba(205, 127, 50, 0.03), rgba(205, 127, 50, 0.01)) !important;
+    box-shadow: 0 8px 32px 0 rgba(205, 127, 50, 0.05) !important;
+}
+
+.island-rank-1 .leader-rank-num { color: #FFD700; font-size: 18px !important; }
+.island-rank-2 .leader-rank-num { color: #C0C0C0; font-size: 18px !important; }
+
+/* =========================================================================
+   СТРОГИЙ PREMIUM DYNAMIC ISLAND И ФИКСЫ СКРОЛЛБАРОВ (ПК ОПТИМИЗАЦИЯ)
+   ========================================================================= */
+
+/* Полностью отключаем отображение скроллбаров во всем приложении на ПК */
+::-webkit-scrollbar {
+    display: none !important;
+    width: 0px !important;
+    background: transparent !important;
+}
+* {
+    scrollbar-width: none !important; /* Для Firefox */
+    -ms-overflow-style: none !important; /* Для IE/Edge */
+}
+
+/* Контейнер верхней навигации топа и новостей */
+.top-nav-island {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Центрируем Dynamic Island */
+    position: relative;
+    margin: 15px 15px 20px 15px;
+    height: 48px;
+}
+
+/* Оригинальный Dynamic Island в стиле исходника с ПК */
+.dynamic-island {
+    display: flex;
+    align-items: center;
+    background: rgba(15, 15, 15, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 40px;
+    padding: 4px;
+    height: 44px;
+}
+
+/* Кнопки переключения внутри Айленда с фиксированной шириной (фикс прыжков) */
+.dynamic-island .nav-btn,
+.dynamic-island-tabs .island-btn {
+    width: 105px; /* Фиксированная ширина предотвращает изменение размера капсулы */
+    text-align: center;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 30px;
+    color: #888888;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 13px;
+    white-space: nowrap;
+    border: none;
+    background: transparent;
+}
+
+.dynamic-island .nav-btn:hover { 
+    color: #fff; 
+}
+
+/* Яркий фирменный красный фон активного выбора как в исходнике */
+.dynamic-island .nav-btn.active,
+.dynamic-island-tabs .island-btn.active {
+    background: rgba(255, 51, 51, 0.1) !important;
+    color: #ff3333 !important;
+    text-shadow: 0 0 10px rgba(255, 51, 51, 0.4);
+}
+
+/* Стильный круглый крестик закрытия — позиционируется строго по центру справа */
+.island-close-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #aaaaaa;
+    width: 34px;
+    height: 34px;
+    border-radius: 50% !important; /* Строго круглый */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+    z-index: 10;
+}
+
+.island-close-btn:active {
+    background: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    transform: translateY(-50%) scale(0.9);
+}
+
+#top-drivers-container {
+    padding: 0 0 40px 0 !important;
+    overflow-y: auto;
+    max-height: calc(100vh - 115px);
+    overflow-x: hidden;
+    width: 100%;
+    overscroll-behavior: none !important; /* Отключает резиновый скролл */
+}
+
+#top-drivers-container::-webkit-scrollbar {
+    display: none;
+}
+
+/* СТИЛІ КАСКАДНОЇ АНІМАЦІЇ КАРТОК (ЗВЕРХУ ВНИЗ) */
+.leaderboard-cascade-card {
+    opacity: 0;
+    transform: translateY(-25px);
+    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform, opacity;
+}
+
+/* Клас, який додається через JS для плавного проявлення */
+.leaderboard-cascade-card.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Ефект підсвічування при кліку/наведенні на мобільці */
+.leaderboard-cascade-card:active {
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* --- СТИЛИ ДЛЯ БЕЛОГО ЦВЕТА ПРОБЕГА --- */
+#total-mileage {
+    color: #ffffff !important;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+/* --- АНИМАЦИЯ СЛАЙДЕРА МЕЖДУ ВКЛАДКАМИ ТОПА --- */
+#top-drivers-container {
+    padding: 0 0 40px 0 !important; /* Убираем боковые паддинги, чтобы карточки не сжимались */
+    overflow-y: auto;
+    max-height: calc(100vh - 115px);
+    overflow-x: hidden; /* Прячем горизонтальный скролл */
+    width: 100%;
+}
+
+#leaderboard-slider {
+    display: flex;
+    width: 200%; /* Две страницы рядом */
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); /* Плавный премиальный инерционный сдвиг */
+    will-change: transform;
+}
+
+.slider-page {
+    width: 50%; /* Каждая страница занимает ровно 100% экрана смартфона */
+    flex-shrink: 0;
+    padding: 0 15px; /* Возвращаем паддинги внутрь страниц для красоты */
+    box-sizing: border-box;
+}
+
+/* =========================================================================
+   ФІКСОВАНЕ НИЖНЄ МЕНЮ В СТИЛІ PREMIUM DYNAMIC ISLAND
+   ========================================================================= */
+
+/* Головний контейнер обгортки сторінок */
+.main-content-wrapper {
+    width: 100%;
+    position: relative;
+}
+
+/* Приховування / Відображення сторінок вкладок */
+.app-tab-page {
+    display: none;
+    width: 100%;
+    animation: fadeInTab 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.app-tab-page.active {
+    display: block;
+}
+
+@keyframes fadeInTab {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Фіксована панель навігації знизу екрана */
+.bottom-nav-container {
+    position: fixed;
+    bottom: 20px; /* Відступ від самого низу екрана смартфона */
+    left: 0;
+    width: 100%;
+    padding: 0 15px;
+    z-index: 9999;
+    pointer-events: none; /* Щоб кліки крізь порожнечу проходили на контент */
+    display: none;
+}
+
+/* Сама капсула Dynamic Island */
+.bottom-dynamic-island {
+    pointer-events: auto; /* Повертаємо кліки на кнопки */
+    max-width: 500px;
+    margin: 0 auto;
+    height: 64px;
+    background: rgba(15, 15, 15, 0.65); /* Темне скло */
+    backdrop-filter: blur(25px) saturate(160%);
+    -webkit-backdrop-filter: blur(25px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 35px; /* Заокруглена капсула */
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 10px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 1px rgba(255, 255, 255, 0.2) inset;
+}
+
+/* Кнопки меню */
+.bottom-nav-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    height: 100%;
+    cursor: pointer;
+    color: #777777; /* Неактивний колір */
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    gap: 4px;
+    position: relative;
+    border-radius: 25px;
+}
+
+/* Іконки всередині кнопок */
+.nav-svg {
+    width: 22px;
+    height: 22px;
+    transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.25s ease;
+}
+
+/* Текст під іконками */
+.bottom-nav-btn span {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+}
+
+/* Стан наведення / Активний стан */
+.bottom-nav-btn:active .nav-svg {
+    transform: scale(0.85);
+}
+
+.bottom-nav-btn.active {
+    color: #ff3333; /* Фірмовий червоний NeoCrime */
+    text-shadow: 0 0 10px rgba(255, 51, 51, 0.3);
+}
+
+.bottom-nav-btn.active .nav-svg {
+    transform: translateY(-2px) scale(1.05); /* Легкий підйом активної іконки */
+    filter: drop-shadow(0 0 6px rgba(255, 51, 51, 0.5));
+}
+
+/* =========================================================================
+   СТИЛІ ДЛЯ СТОРІНОК «У РОЗРОБЦІ» (UNDER CONSTRUCTION)
+   ========================================================================= */
+.under-construction-plate {
+    background: rgba(15, 15, 15, 0.5);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 40px 25px;
+    margin: 40vh 15px 0 15px; /* Розміщуємо по центру екрана мобілки */
+    transform: translateY(-50%);
+    text-align: center;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+}
+
+.construction-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+    filter: drop-shadow(0 0 10px rgba(255,255,255,0.1));
+}
+
+.under-construction-plate h3 {
+    margin: 0 0 10px 0;
+    font-size: 18px;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+}
+
+.under-construction-plate p {
+    margin: 0;
+    font-size: 13px;
+    color: #aaaaaa;
+    line-height: 1.5;
+    font-weight: 500;
+}
+
+/* Мобільна оптимізація кнопок новин */
+.shop-btn.news-open-btn {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #eee;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.shop-btn.news-open-btn:active {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* =========================================================================
+   ЭСТЕТИЧНЫЕ БЕЛО-СЕРЫЕ СТИЛИ ДЛЯ ЛЕНТЫ И СТРАНИЦЫ НОВОСТЕЙ
+   ========================================================================= */
+
+.news-feed-title-meta {
+    margin: 0; 
+    text-transform: uppercase; 
+    letter-spacing: 1px; 
+    color: #888888; /* Убрали красный, сделали благородный серый */
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.news-card-title {
+    margin: 0 0 8px 0; 
+    font-size: 17px; 
+    font-weight: 900; 
+    color: #ffffff; 
+    line-height: 1.3;
+}
+
+.news-card-summary {
+    margin: 0 0 15px 0; 
+    font-size: 13px; 
+    color: #aaaaaa; 
+    line-height: 1.5;
+}
+
+.news-separator {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.06);
+    width: 100%;
+    margin-bottom: 12px;
+}
+
+.news-footer-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: #666666;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.news-footer-author {
+    color: #999999 !important; /* Убрали красный цвет автора */
+    font-weight: 700;
+}
+
+/* Естетична кнопка детальніше зі шрифтом як у заголовка новини */
+.shop-btn.news-open-btn {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: #ffffff;
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900 !important; /* ЖИРНИЙ ШРИФТ ЯК У ЗАГОЛОВКА */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease;
+    width: 100%;
+    cursor: pointer;
+}
+
+.shop-btn.news-open-btn:active {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.15);
+    transform: scale(0.98);
+}
+
+.news-thumb {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Разблокировка кликов специально для ленты новостей и конвоев */
+#news-feed-container .leaderboard-cascade-card,
+#convoys-list-container .leaderboard-cascade-card,
+#shop-list-container .leaderboard-cascade-card {
+    pointer-events: auto !important;
+}
+
+/* Добавляем эффект нажатия именно на картинку маршрута, чтобы юзер понимал, что она кликабельна */
+#convoys-list-container img[onclick] {
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+#convoys-list-container img[onclick]:active {
+    transform: scale(0.9);
+    opacity: 0.8;
+}
+
+/* =========================================================================
+   АНИМАЦИИ ДЛЯ КАРТЫ КОНВОЕВ
+   ========================================================================= */
+
+@keyframes mapModalFadeIn {
+    from { opacity: 0; backdrop-filter: blur(0px); }
+    to { opacity: 1; backdrop-filter: blur(10px); }
+}
+
+@keyframes mapModalZoomIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes mapModalFadeOut {
+    from { opacity: 1; backdrop-filter: blur(10px); }
+    to { opacity: 0; backdrop-filter: blur(0px); }
+}
+
+@keyframes mapModalZoomOut {
+    from { transform: scale(1); opacity: 1; }
+    to { transform: scale(0.8); opacity: 0; }
+}
+
+.map-modal-active {
+    display: flex !important;
+    animation: mapModalFadeIn 0.3s ease-out forwards;
+}
+
+.map-modal-active #mobile-map-img {
+    animation: mapModalZoomIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.map-modal-closing {
+    animation: mapModalFadeOut 0.25s ease-out forwards !important;
+}
+
+.map-modal-closing #mobile-map-img {
+    animation: mapModalZoomOut 0.25s ease-out forwards !important;
+}
+
+/* =========================================================================
+   СТИЛІ ДЛЯ МАГАЗИНУ (МОБІЛЬНА ВЕРСІЯ)
+   ========================================================================= */
+.mobile-shop-btn {
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 900;
+    text-transform: uppercase;
+    width: 100%;
+    margin-top: 8px;
+    cursor: pointer;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid;
+    transition: all 0.2s ease;
+}
+
+.mobile-shop-btn.temp { color: #ff9900; border-color: rgba(255, 153, 0, 0.5); }
+.mobile-shop-btn.temp:active { background: rgba(255, 153, 0, 0.15); }
+
+.mobile-shop-btn.perm { color: #4CAF50; border-color: rgba(76, 175, 80, 0.5); }
+.mobile-shop-btn.perm:active { background: rgba(76, 175, 80, 0.15); }
+
+.mobile-shop-btn.disabled { color: #666; border-color: #444; background: rgba(255,255,255,0.03); cursor: not-allowed; }
+
+/* Анімація для модалки магазину */
+.shop-modal-active { display: flex !important; animation: mapModalFadeIn 0.2s ease-out forwards; }
+.shop-modal-active #mobile-shop-modal-content { transform: scale(1) !important; opacity: 1 !important; }
+.shop-modal-closing { animation: mapModalFadeOut 0.2s ease-out forwards !important; }
+.shop-modal-closing #mobile-shop-modal-content { transform: scale(0.9) !important; opacity: 0 !important; }
+
+/* =========================================================================
+   МОБІЛЬНА ПЛАШКА-СПОВІЩЕННЯ (TOAST)
+   ========================================================================= */
+.mobile-toast-island {
+    position: fixed;
+    top: -100px; /* Ховаємо зверху */
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(10, 10, 10, 0.85) !important;
+    backdrop-filter: blur(20px) saturate(160%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(160%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding: 12px 24px;
+    border-radius: 30px;
+    z-index: 99999;
+    transition: top 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
+}
+
+.mobile-toast-island.active {
+    top: 20px; /* Виїжджає зверху екрана */
+}
+
+.mobile-toast-content {
+    display: flex;
+    align-items: center;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+
+/* =========================================================================
+   СТИЛІ ДЛЯ ВІКТОРИНИ (QUIZ)
+   ========================================================================= */
+/* Кнопка вікторини біля аватара */
+.quiz-top-btn {
+    position: absolute;
+    top: 50%;
+    right: -70px; /* Відступ праворуч від аватара */
+    transform: translateY(-50%);
+    width: 55px;
+    height: 55px;
+    border-radius: 16px;
+    background: rgba(15, 15, 15, 0.6);
+    border: 2px solid #555;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 28px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.quiz-top-btn.active {
+    border-color: #ff66b2; /* Рожева обводка як у десктопі */
+    background: rgba(255, 102, 178, 0.1);
+    box-shadow: 0 0 15px rgba(255, 102, 178, 0.3);
+}
+
+.quiz-top-btn.active:hover {
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 0 25px rgba(255, 102, 178, 0.5);
+}
+
+.quiz-top-btn.disabled {
+    filter: grayscale(100%);
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Кнопки варіантів відповіді */
+.mobile-quiz-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    padding: 15px 12px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    line-height: 1.4;
+}
+
+.mobile-quiz-btn:active:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(0.96);
+}
+
+.mobile-quiz-btn.correct {
+    border-color: #4CAF50 !important;
+    background: rgba(76, 175, 80, 0.15) !important;
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.2) !important;
+}
+
+.mobile-quiz-btn.wrong {
+    border-color: #ff3333 !important;
+    background: rgba(255, 51, 51, 0.15) !important;
+    box-shadow: 0 0 15px rgba(255, 51, 51, 0.2) !important;
+}
+
+.mobile-quiz-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+/* =========================================================================
+   СТИЛІ ДЛЯ ВІКТОРИНИ (QUIZ) - ДЕСКТОПНИЙ ДИЗАЙН
+   ========================================================================= */
+.quiz-island {
+    position: absolute;
+    top: 20px; /* Висота по центру аватарки */
+    right: 15px; /* Притискаємо до правого краю екрана */
+    width: 48px;
+    height: 48px;
+    background: rgba(15, 15, 15, 0.6) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 2px solid #4CAF50 !important; /* Зелена обводка */
+    border-radius: 50% !important; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.2) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.quiz-island svg {
+    stroke: #ff66b2; /* Рожевий мозок */
+    transition: stroke 0.3s ease;
+}
+
+/* Ефект натискання для мобілки */
+.quiz-island:active:not(.cooldown) {
+    background: rgba(255, 255, 255, 0.1) !important;
+    transform: scale(0.95) !important; 
+    box-shadow: 0 0 25px rgba(76, 175, 80, 0.4) !important;
+}
+
+.quiz-island.cooldown {
+    border-color: #555555 !important; /* Сіра обводка при кулдауні */
+    opacity: 0.7 !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+}
+
+.quiz-island.cooldown svg {
+    stroke: #888888 !important; /* Сірий мозок */
+}
+
+/* =========================================================================
+   СТАТУС БАНІВ TRUCKERSMP (МОБІЛЬНА ВЕРСІЯ)
+   ========================================================================= */
+.status-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #555;
+    box-shadow: 0 0 5px rgba(0,0,0,0.5);
     transition: all 0.3s ease;
 }
 
-.gift-btn svg {
-    width: 24px;
-    height: 24px;
+.status-dot.green {
+    background: #4CAF50;
+    box-shadow: 0 0 10px #4CAF50, inset 0 0 4px #fff;
 }
 
-/* Желтая обводка, если активна */
-.gift-btn.active {
-    border: 2px solid #ffd700;
-    color: #ffd700;
-    box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+.status-dot.red {
+    background: #ff3333;
+    box-shadow: 0 0 10px #ff3333, inset 0 0 4px #fff;
+    animation: pulse-red-mobile 1.5s infinite;
 }
 
-.gift-btn.active:opacity {
-    opacity: 0.9;
-}
-
-/* Серая обводка, если выключена */
-.gift-btn.disabled {
-    border: 2px solid #444444;
-    color: #555555;
-    cursor: not-allowed;
-    box-shadow: none;
+@keyframes pulse-red-mobile {
+    0% { box-shadow: 0 0 10px #ff3333; }
+    50% { box-shadow: 0 0 20px #ff3333, 0 0 8px #ff3333 inset; }
+    100% { box-shadow: 0 0 10px #ff3333; }
 }
