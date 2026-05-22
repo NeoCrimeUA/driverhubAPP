@@ -14,7 +14,9 @@
 
 /* 1. Повністю знімаємо всі блокатори вертикального скролу */
 html, body {
-    overflow-x: hidden !important; /* Забороняємо лише горизонтальний зсув */
+    overflow-x: hidden !important; 
+    overflow-y: auto !important; /* Явно дозволяємо вертикальний скролл */
+    overscroll-behavior-y: none !important; /* ВБИВАЄМО "гумовий" відскік Telegram, який краде перший свайп */
     width: 100%; 
     position: relative;
     -webkit-overflow-scrolling: touch;
@@ -1110,27 +1112,7 @@ body {
 .leaderboard-list,
 .main-content-wrapper {
     -webkit-overflow-scrolling: touch !important; 
-    touch-action: pan-y !important; /* Разрешаем браузеру обрабатывать только вертикальный свайп, убирая лаги от микро-сдвигов по горизонтали */
-}
-
-/* 2. Форсируем использование видеокарты (GPU) для тяжелых стеклянных панелей */
-.glass-panel, .card {
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    /* Это заставит телефон выделить отдельный графический слой под карточку, скролл перестанет тормозить из-за blur() */
-    transform: translateZ(0); 
-    -webkit-transform: translateZ(0);
-}
-
-/* 3. Убираем рывки анимаций при быстрой прокрутке */
-.leaderboard-cascade-card {
-    will-change: transform, opacity;
-}
-
-/* 4. Глобальный фикс сглаживания шрифтов при аппаратном ускорении */
-body {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    /* Рядок touch-action видалено, щоб скролл реагував з першого торкання */
 }
 
 /* =========================================================================
