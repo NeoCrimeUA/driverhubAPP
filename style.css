@@ -12,14 +12,10 @@
     -webkit-touch-callout: none; 
 }
 
-/* 1. Повністю знімаємо всі блокатори вертикального скролу */
 html, body {
-    overflow-x: hidden !important; 
-    overflow-y: auto !important; /* Явно дозволяємо вертикальний скролл */
-    overscroll-behavior-y: none !important; /* ВБИВАЄМО "гумовий" відскік Telegram, який краде перший свайп */
     width: 100%; 
+    overflow-x: hidden; /* Оставляем только защиту от горизонтального сдвига */
     position: relative;
-    -webkit-overflow-scrolling: touch;
 }
 
 body {
@@ -362,14 +358,6 @@ body {
    ОПТИМІЗОВАНИЙ КОНТЕЙНЕР ЛІДЕРБОРДУ ТА СКРОЛЛУ
    ========================================================================= */
 
-#top-drivers-container {
-    padding: 0 0 140px 0 !important;
-    overflow-y: auto !important;
-    max-height: calc(100vh - 115px);
-    overflow-x: hidden !important;
-    width: 100% !important;
-    -webkit-overflow-scrolling: touch !important;
-}
 
 /* Полностью отключаем клики, ховеры и подсветку при нажатии */
 .leaderboard-cascade-card {
@@ -503,18 +491,6 @@ body {
     transform: translateY(-50%) scale(0.9);
 }
 
-#top-drivers-container {
-    padding: 0 0 40px 0 !important;
-    overflow-y: auto;
-    max-height: calc(100vh - 115px);
-    overflow-x: hidden;
-    width: 100%;
-    overscroll-behavior: none !important; /* Отключает резиновый скролл */
-}
-
-#top-drivers-container::-webkit-scrollbar {
-    display: none;
-}
 
 /* СТИЛІ КАСКАДНОЇ АНІМАЦІЇ КАРТОК (ЗВЕРХУ ВНИЗ) */
 .leaderboard-cascade-card {
@@ -541,14 +517,6 @@ body {
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
 }
 
-/* --- АНИМАЦИЯ СЛАЙДЕРА МЕЖДУ ВКЛАДКАМИ ТОПА --- */
-#top-drivers-container {
-    padding: 0 0 40px 0 !important; /* Убираем боковые паддинги, чтобы карточки не сжимались */
-    overflow-y: auto;
-    max-height: calc(100vh - 115px);
-    overflow-x: hidden; /* Прячем горизонтальный скролл */
-    width: 100%;
-}
 
 #leaderboard-slider {
     display: flex;
@@ -1103,16 +1071,9 @@ body {
     to { opacity: 0; transform: translateX(20px); }
 }
 
-/* =========================================================================
-   ОПТИМІЗАЦІЯ ПЛАВНОСТІ СКРОЛЛУ ТА АПАРАТНЕ ПРИСКОРЕННЯ (MOBILE FIX)
-   ========================================================================= */
-
-/* 1. Включаем нативный инерционный скролл (momentum scrolling) для внутренних блоков */
-#top-drivers-container, 
-.leaderboard-list,
-.main-content-wrapper {
-    -webkit-overflow-scrolling: touch !important; 
-    /* Рядок touch-action видалено, щоб скролл реагував з першого торкання */
+#top-drivers-container {
+    padding: 0 0 140px 0; /* Оставляем только нижний отступ, чтобы контент не перекрывался меню */
+    width: 100%;
 }
 
 /* =========================================================================
