@@ -4,33 +4,28 @@
     -webkit-user-select: none;
 }
 
-/* 1. Жестко фиксируем ширину и блокируем скролл на уровне документа */
-html, body {
-    overscroll-behavior: none;
-    overscroll-behavior-y: none;
-    -webkit-overflow-scrolling: touch;
-    overflow-x: hidden !important; 
-    overflow-y: auto; /* РОЗБЛОКОВУЄМО ВЕРТИКАЛЬНИЙ СКРОЛЛ */
-    width: 100%; 
-    position: relative;
-}
-
-
 * {
     box-sizing: border-box;
     user-select: none;
     -webkit-user-select: none;
-    -webkit-tap-highlight-color: transparent; /* Убирает синий квадрат при тапе */
-    -webkit-touch-callout: none; /* Блокирует всплывающее меню у фото/ссылок */
+    -webkit-tap-highlight-color: transparent; 
+    -webkit-touch-callout: none; 
+}
+
+/* 1. Повністю знімаємо всі блокатори вертикального скролу */
+html, body {
+    overflow-x: hidden !important; /* Забороняємо лише горизонтальний зсув */
+    width: 100%; 
+    position: relative;
+    -webkit-overflow-scrolling: touch;
 }
 
 body {
-    background-color: #080808; /* Чисто черный глубокий фон из десктопа */
+    background-color: #080808; 
     margin: 0;
     color: #fff;
     font-family: 'Montserrat', sans-serif;
-    padding-top: 30px; /* Сместили весь интерфейс и аватарку на 5px вниз */
-    overscroll-behavior: none; /* ФІКС: Забороняє екрану смикатися вгору-вниз при упорі скролла */
+    padding-top: 30px; 
 }
 
 .loading-container {
@@ -366,11 +361,12 @@ body {
    ========================================================================= */
 
 #top-drivers-container {
-    padding: 0 0 140px 0 !important; /* Отступ снизу, чтобы карточки не перекрывались меню */
+    padding: 0 0 140px 0 !important;
     overflow-y: auto !important;
-    max-height: calc(100vh - 120px) !important;
+    max-height: calc(100vh - 115px);
     overflow-x: hidden !important;
     width: 100% !important;
+    -webkit-overflow-scrolling: touch !important;
 }
 
 /* Полностью отключаем клики, ховеры и подсветку при нажатии */
