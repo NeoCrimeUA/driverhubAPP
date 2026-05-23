@@ -15,6 +15,7 @@
 html, body {
     width: 100%;
     position: relative;
+    overflow-x: hidden; /* Блокує горизонтальний скрол на рівні сторінки */
 }
 
 body {
@@ -514,10 +515,10 @@ body {
    ФІКСОВАНЕ НИЖНЄ МЕНЮ В СТИЛІ PREMIUM DYNAMIC ISLAND
    ========================================================================= */
 
-/* 2. Блокируем расширение экрана при срабатывании анимации translateX */
 .main-content-wrapper {
     width: 100%;
     position: relative;
+    overflow-x: hidden; /* Жорстко блокує розтягування під час перемикання вкладок */
 }
 
 /* 3. Гарантируем, что сама вкладка новостей не ломает ширину */
@@ -1077,4 +1078,17 @@ body {
     60% { transform: translate(2px, 2px) }
     80% { transform: translate(2px, -2px) }
     100% { transform: translate(0) }
+}
+
+/* =========================================================================
+   ФІКСИ ДЛЯ ВІДКРИТОЇ НОВИНИ
+   ========================================================================= */
+#mobile-news-desc {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+#news-opened-view .dynamic-island span {
+    white-space: nowrap; /* Запобігає переносу тексту в самому Айленді, щоб він не розтягувався вниз */
 }
