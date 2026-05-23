@@ -15,7 +15,7 @@
 html, body {
     width: 100%;
     position: relative;
-    overflow-x: hidden; /* Блокує горизонтальний скрол на рівні сторінки */
+    /* Видалено overflow-x: hidden, щоб не ламати вертикальний скрол у Telegram */
 }
 
 body {
@@ -24,6 +24,7 @@ body {
     color: #fff;
     font-family: 'Montserrat', sans-serif;
     padding-top: 30px; 
+    -webkit-overflow-scrolling: touch; /* Гарантує плавний і чіткий скрол на мобільних пристроях */
 }
 
 .loading-container {
@@ -518,7 +519,8 @@ body {
 .main-content-wrapper {
     width: 100%;
     position: relative;
-    overflow-x: hidden; /* Жорстко блокує розтягування під час перемикання вкладок */
+    overflow-x: clip; /* clip працює краще за hidden: ховає анімацію, але не створює багів зі скролом */
+    overflow-y: visible; /* Пропускає вертикальний жест скролу до body */
 }
 
 /* 3. Гарантируем, что сама вкладка новостей не ломает ширину */
