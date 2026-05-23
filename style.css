@@ -14,9 +14,6 @@
 
 html, body {
     width: 100%;
-    overflow-x: hidden; /* Захист від горизонтального зсуву залишаємо */
-    overflow-y: auto; /* ФІКС: Явно дозволяємо вертикальний скрол */
-    -webkit-overflow-scrolling: touch; /* ФІКС: Вмикаємо нативний плавний скрол для iOS */
     position: relative;
 }
 
@@ -290,11 +287,8 @@ body {
 /* --- СПИСОК ЛІДЕРІВ --- */
 .leaderboard-list {
     flex: 1;
-    overflow-y: auto;
     padding-right: 5px;
 }
-.leaderboard-list::-webkit-scrollbar { width: 4px; }
-.leaderboard-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 4px; }
 
 .leader-card {
     display: flex;
@@ -357,9 +351,8 @@ body {
 .leader-km span { font-size: 10px; color: #666; margin-left: 2px; }
 
 /* =========================================================================
-   ОПТИМІЗОВАНИЙ КОНТЕЙНЕР ЛІДЕРБОРДУ ТА СКРОЛЛУ
+   ОПТИМІЗОВАНИЙ КОНТЕЙНЕР ЛІДЕРБОРДУ
    ========================================================================= */
-
 
 /* Полностью отключаем клики, ховеры и подсветку при нажатии */
 .leaderboard-cascade-card {
@@ -394,21 +387,6 @@ body {
 
 .island-rank-1 .leader-rank-num { color: #FFD700; font-size: 18px !important; }
 .island-rank-2 .leader-rank-num { color: #C0C0C0; font-size: 18px !important; }
-
-/* =========================================================================
-   СТРОГИЙ PREMIUM DYNAMIC ISLAND И ФИКСЫ СКРОЛЛБАРОВ (ПК ОПТИМИЗАЦИЯ)
-   ========================================================================= */
-
-/* Полностью отключаем отображение скроллбаров во всем приложении на ПК */
-::-webkit-scrollbar {
-    display: none !important;
-    width: 0px !important;
-    background: transparent !important;
-}
-* {
-    scrollbar-width: none !important; /* Для Firefox */
-    -ms-overflow-style: none !important; /* Для IE/Edge */
-}
 
 /* Контейнер верхней навигации топа и новостей */
 .top-nav-island {
@@ -493,7 +471,6 @@ body {
     transform: translateY(-50%) scale(0.9);
 }
 
-
 /* СТИЛІ КАСКАДНОЇ АНІМАЦІЇ КАРТОК (ЗВЕРХУ ВНИЗ) */
 .leaderboard-cascade-card {
     opacity: 0;
@@ -519,7 +496,6 @@ body {
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
 }
 
-
 #leaderboard-slider {
     display: flex;
     width: 200%; /* Две страницы рядом */
@@ -542,12 +518,10 @@ body {
 .main-content-wrapper {
     width: 100%;
     position: relative;
-    overflow-x: hidden !important; /* Не дает анимации вытолкнуть контент за рамки */
 }
 
 /* 3. Гарантируем, что сама вкладка новостей не ломает ширину */
 #tab-content-news {
-    overflow-x: hidden;
     width: 100%;
 }
 
