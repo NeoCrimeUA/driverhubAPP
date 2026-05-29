@@ -787,6 +787,29 @@
         let globalNewsData = [];
         let globalNewsLoaded = false; // Додано прапорець блокування
 
+        function parseNewsDate(dateStr) {
+            if (!dateStr) return 0;
+            const parts = String(dateStr).trim().split('.');
+            if (parts.length !== 3) return 0;
+            const day = parseInt(parts[0], 10);
+            const month = parseInt(parts[1], 10) - 1;
+            const year = parseInt(parts[2], 10);
+            const d = new Date(year, month, day);
+            return isNaN(d.getTime()) ? 0 : d.getTime();
+        }
+
+        function sortNewsByDate(items) {
+            return [...items].sort((a, b) => parseNewsDate(b.date) - parseNewsDate(a.date));
+        }
+
+        function getNewsCardPreview(item) {
+            const text = (item.description || '').trim();
+            if (!text) return 'Опис відсутній.';
+            const firstLine = text.split('\n')[0].trim();
+            if (firstLine.length > 140) return firstLine.slice(0, 137) + '...';
+            return firstLine;
+        }
+
         function loadNews() {
             const container = document.getElementById('news-feed-container');
             
@@ -802,7 +825,7 @@
             .then(data => {
                 if (data.status === "success") {
                     container.innerHTML = '';
-                    globalNewsData = data.news;
+                    globalNewsData = sortNewsByDate(data.news);
 
                     if (globalNewsData.length === 0) {
                         container.innerHTML = '<div class="glass-panel card" style="text-align: center; color: #888; font-size: 13px;">Наразі свіжих новин немає.</div>';
@@ -821,7 +844,7 @@
                         card.innerHTML = `
                             ${photoHtml}
                             <h3 class="news-card-title">${item.title || 'Без заголовка'}</h3>
-                            <p class="news-card-summary">${item.summary || 'Опис відсутній.'}</p>
+                            <p class="news-card-summary">${getNewsCardPreview(item)}</p>
                             <div class="news-separator"></div>
                             <div class="news-footer-container">
                                 <span class="news-footer-author">${item.author || 'Адміністрація'}</span>
@@ -855,7 +878,7 @@
             document.getElementById('mobile-news-title').innerText = newsItem.title || 'Без заголовка';
             document.getElementById('mobile-news-author').innerText = `Автор: ${newsItem.author || 'Адміністрація'}`;
             document.getElementById('mobile-news-date').innerText = newsItem.date || '-';
-            document.getElementById('mobile-news-desc').innerText = newsItem.description || newsItem.summary || 'Опис відсутній.';
+            document.getElementById('mobile-news-desc').innerText = newsItem.description || 'Опис відсутній.';
             
             let img = document.getElementById('mobile-news-img');
             if (newsItem.photo_link && newsItem.photo_link.trim() !== "") {
