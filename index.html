@@ -540,7 +540,8 @@
                 else if (rank === 2) rankDisplay = '🥈';
                 else if (rank === 3) rankDisplay = '🥉';
 
-                const kmFormatted = parseInt(driver.km_total).toLocaleString('en-US');
+                const kmValue = (driver.km_display !== undefined) ? driver.km_display : driver.km_total;
+                const kmFormatted = parseInt(kmValue).toLocaleString('en-US');
                 const avatar = driver.avatar_url || "https://i.ibb.co/60qZq1c/default-avatar.png";
                 const name = driver.display_name || "Невідомо";
 
